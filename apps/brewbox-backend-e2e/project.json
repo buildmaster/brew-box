@@ -1,0 +1,22 @@
+{
+  "name": "brewbox-backend-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "implicitDependencies": ["brewbox-backend"],
+  "targets": {
+    "e2e": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{e2eProjectRoot}"],
+      "options": {
+        "jestConfig": "apps/brewbox-backend-e2e/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/brewbox-backend-e2e/**/*.{js,ts}"]
+      }
+    }
+  }
+}

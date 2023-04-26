@@ -1,0 +1,126 @@
+{
+  "name": "brewbox-frontend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/brewbox-frontend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/vite:build",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/brewbox-frontend"
+      },
+      "configurations": {
+        "development": {
+          "mode": "development"
+        },
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/vite:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "brewbox-frontend:build",
+        "proxyConfig": "apps/brewbox-frontend/proxy.conf.json"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "brewbox-frontend:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "brewbox-frontend:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "preview": {
+      "executor": "@nrwl/vite:preview-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "brewbox-frontend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "brewbox-frontend:build:development"
+        },
+        "production": {
+          "buildTarget": "brewbox-frontend:build:production"
+        }
+      }
+    },
+    "test": {
+      "executor": "@nrwl/vite:test",
+      "outputs": [
+        "coverage/apps/brewbox-frontend"
+      ],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../coverage/apps/brewbox-frontend"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/brewbox-frontend/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nrwl/web:file-server",
+      "options": {
+        "buildTarget": "brewbox-frontend:build"
+      }
+    },
+    "storybook": {
+      "executor": "@nrwl/storybook:storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/brewbox-frontend/.storybook"
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@nrwl/storybook:build",
+      "outputs": [
+        "{options.outputDir}"
+      ],
+      "options": {
+        "outputDir": "dist/storybook/brewbox-frontend",
+        "configDir": "apps/brewbox-frontend/.storybook"
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "static-storybook": {
+      "executor": "@nrwl/web:file-server",
+      "options": {
+        "buildTarget": "brewbox-frontend:build-storybook",
+        "staticFilePath": "dist/storybook/brewbox-frontend"
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "brewbox-frontend:build-storybook:ci"
+        }
+      }
+    }
+  },
+  "tags": []
+}

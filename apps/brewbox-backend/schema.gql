@@ -1,0 +1,20 @@
+type Vessel {
+  """Id of the vessel"""
+  id: Int!
+
+  """Name of the Vessell"""
+  name: String!
+}
+
+type Query {
+  vessel: [Vessel!]!
+}
+
+type Mutation {
+  createVessel(createVesselInput: CreateVesselInput!): Vessel!
+}
+
+input CreateVesselInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
