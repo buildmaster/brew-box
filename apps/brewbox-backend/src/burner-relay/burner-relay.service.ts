@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBurnerRelayInput } from './dto/create-burner-relay.input';
 import { UpdateBurnerRelayInput } from './dto/update-burner-relay.input';
+import { BurnerRelay } from './entities/burner-relay.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class BurnerRelayService {
+  constructor(
+    @InjectRepository(BurnerRelay)
+    private entityRepository: Repository<BurnerRelay>
+  ) {}
   create(createBurnerRelayInput: CreateBurnerRelayInput) {
     return 'This action adds a new burnerRelay';
   }
 
   findAll() {
-    return `This action returns all burnerRelay`;
+    return this.entityRepository.find();
   }
 
   findOne(id: number) {

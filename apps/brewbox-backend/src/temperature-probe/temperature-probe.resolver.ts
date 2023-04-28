@@ -18,7 +18,7 @@ export class TemperatureProbeResolver {
     return this.temperatureProbeService.create(createTemperatureProbeInput);
   }
 
-  @Query(() => [TemperatureProbe], { name: 'temperatureProbe' })
+  @Query(() => [TemperatureProbe], { name: 'temperatureProbes' })
   findAll() {
     return this.temperatureProbeService.findAll();
   }

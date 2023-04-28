@@ -16,7 +16,7 @@ export class BurnerRelayResolver {
     return this.burnerRelayService.create(createBurnerRelayInput);
   }
 
-  @Query(() => [BurnerRelay], { name: 'burnerRelay' })
+  @Query(() => [BurnerRelay], { name: 'burnerRelays' })
   findAll() {
     return this.burnerRelayService.findAll();
   }

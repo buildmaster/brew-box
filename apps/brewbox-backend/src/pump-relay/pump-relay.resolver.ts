@@ -15,7 +15,7 @@ export class PumpRelayResolver {
     return this.pumpRelayService.create(createPumpRelayInput);
   }
 
-  @Query(() => [PumpRelay], { name: 'pumpRelay' })
+  @Query(() => [PumpRelay], { name: 'pumpRelays' })
   findAll() {
     return this.pumpRelayService.findAll();
   }

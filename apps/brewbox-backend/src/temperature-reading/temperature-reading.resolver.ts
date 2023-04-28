@@ -18,7 +18,7 @@ export class TemperatureReadingResolver {
     return this.temperatureReadingService.create(createTemperatureReadingInput);
   }
 
-  @Query(() => [TemperatureReading], { name: 'temperatureReading' })
+  @Query(() => [TemperatureReading], { name: 'temperatureReadings' })
   findAll() {
     return this.temperatureReadingService.findAll();
   }

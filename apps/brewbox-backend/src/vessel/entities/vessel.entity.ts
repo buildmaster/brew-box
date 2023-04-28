@@ -1,5 +1,7 @@
 import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
+import { BurnerRelay } from '../../burner-relay/entities/burner-relay.entity';
+import { TemperatureProbe } from '../../temperature-probe/entities/temperature-probe.entity';
 
 @Entity()
 @ObjectType()
@@ -21,4 +23,18 @@ export class Vessel {
     defaultValue: 0,
   })
   lastTemperature?: number;
+
+  @OneToOne(() => TemperatureProbe, (relay) => relay.vessel, { nullable: true })
+  @Field(() => TemperatureProbe, {
+    description: 'Probe on this vessel',
+    nullable: true,
+  })
+  probe: TemperatureProbe;
+
+  @OneToOne(() => BurnerRelay, (relay) => relay.vessel, { nullable: true })
+  @Field(() => BurnerRelay, {
+    description: 'Burner under the vessel',
+    nullable: true,
+  })
+  burner: BurnerRelay;
 }

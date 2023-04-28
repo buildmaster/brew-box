@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTemperatureReadingInput } from './dto/create-temperature-reading.input';
 import { UpdateTemperatureReadingInput } from './dto/update-temperature-reading.input';
-
+import { TemperatureReading } from './entities/temperature-reading.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 @Injectable()
 export class TemperatureReadingService {
+  constructor(
+    @InjectRepository(TemperatureReading)
+    private entityRepository: Repository<TemperatureReading>
+  ) {}
+
   create(createTemperatureReadingInput: CreateTemperatureReadingInput) {
     return 'This action adds a new temperatureReading';
   }
 
   findAll() {
-    return `This action returns all temperatureReading`;
+    return this.entityRepository.find();
   }
 
   findOne(id: number) {

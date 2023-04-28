@@ -85,7 +85,7 @@ export function Vessel(props: VesselProps) {
         <div className="sm:grid sm:grid-cols-10">
           <div className="sm:col-span-3">
             <svg
-              className="fill-gray-600"
+              className="fill-gray-600 dark:fill-white"
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 700 700"
@@ -162,7 +162,7 @@ export function Vessel(props: VesselProps) {
               <div className="mt-2 sm:col-span-6 sm:mt-0 pt-2 sm:pt-0">
                 <label
                   htmlFor="currentTemperature"
-                  className="block text-sm font-medium leading-8 text-gray-900"
+                  className="block text-sm font-medium leading-8"
                 >
                   Current Temperature
                 </label>
@@ -184,7 +184,7 @@ export function Vessel(props: VesselProps) {
               <div className="mt-2 sm:col-span-6 sm:mt-0 pt-2 sm:pt-0">
                 <label
                   htmlFor="setpointTemperature"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6"
                 >
                   Setpoint Temperature
                 </label>

@@ -1,7 +1,7 @@
-import { ObjectType, Field, Int } from '@nestjs/graphql';
+import { ChildEntity, Column } from 'typeorm';
+import { Relay } from '../../relay/entities/relay.entity';
+import { ObjectType } from '@nestjs/graphql';
 
+@ChildEntity()
 @ObjectType()
-export class PumpRelay {
-  @Field(() => Int, { description: 'Example field (placeholder)' })
-  exampleField: number;
-}
+export class PumpRelay extends Relay {}
