@@ -2,6 +2,7 @@ import '../src/styles.css';
 import { withThemeByClassName } from '@storybook/addon-styling';
 import { Preview } from '@storybook/react';
 import { MockedProvider } from '@apollo/client/testing';
+import { themes } from '@storybook/theming';
 const preview: Preview = {
   parameters: {
     apolloClient: {
@@ -21,7 +22,7 @@ const preview: Preview = {
   decorators: [
     withThemeByClassName({
       themes: {
-        light: 'light',
+        light: '',
         dark: 'dark',
       },
       defaultTheme: 'light',

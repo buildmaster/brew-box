@@ -1,4 +1,4 @@
-import { ChildEntity, Column } from 'typeorm';
+import { ChildEntity } from 'typeorm';
 import { Relay } from '../../relay/entities/relay.entity';
 import { ObjectType } from '@nestjs/graphql';
 
