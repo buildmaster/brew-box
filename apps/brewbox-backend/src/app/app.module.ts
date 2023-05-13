@@ -14,8 +14,8 @@ import { BurnerRelayModule } from '../burner-relay/burner-relay.module';
 import { PumpRelayModule } from '../pump-relay/pump-relay.module';
 import { Relay } from '../relay/entities/relay.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { PubSub } from 'graphql-subscriptions';
 import { Context } from 'graphql-ws';
+import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 
 @Module({
   imports: [
@@ -34,13 +34,11 @@ import { Context } from 'graphql-ws';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       subscriptions: {
-        'graphql-ws': {
-          onConnect: (context: Context<any>) => {
-            console.log({ context }, 'ws connected');
-          },
-        },
+        'graphql-ws': {},
       },
       autoSchemaFile: true,
+      playground: false,
+      plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
     EventEmitterModule.forRoot(),
   ],
