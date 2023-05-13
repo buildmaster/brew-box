@@ -2,8 +2,9 @@ import type { StorybookConfig } from '@storybook/react-vite';
 
 const config: StorybookConfig = {
   docs: {
-    autodocs: true,
-    defaultName: 'Docs',
+    //👇 See the table below for the list of supported options
+    autodocs: 'tag',
+    defaultName: 'Documentation',
   },
   typescript: {
     reactDocgen: 'react-docgen-typescript',
@@ -12,6 +13,7 @@ const config: StorybookConfig = {
   addons: [
     '@storybook/addon-essentials',
     'storybook-addon-apollo-client',
+    'storybook-addon-react-router-v6',
     {
       name: '@storybook/addon-styling',
       options: {

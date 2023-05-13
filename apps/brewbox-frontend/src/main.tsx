@@ -4,13 +4,43 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  gql,
+  HttpLink,
+  split,
 } from '@apollo/client';
-import App from './app/app';
-const client = new ApolloClient({
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { AppRoutes } from './app/routes';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
+import { getMainDefinition } from '@apollo/client/utilities';
+
+const httpLink = new HttpLink({
   uri: '/graphql',
+});
+
+const wsLink = new GraphQLWsLink(
+  createClient({
+    url: 'ws://localhost:3000/graphql',
+  })
+);
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    );
+  },
+  wsLink,
+  httpLink
+);
+
+const client = new ApolloClient({
+  link: splitLink,
   cache: new InMemoryCache(),
 });
+
+const router = createBrowserRouter(AppRoutes);
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -18,7 +48,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <ApolloProvider client={client}>
-      <App />
+      <RouterProvider router={router} />
     </ApolloProvider>
   </StrictMode>
 );

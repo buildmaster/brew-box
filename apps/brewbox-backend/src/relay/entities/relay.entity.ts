@@ -14,7 +14,7 @@ export class Relay {
   @Field(() => Int, { description: 'The relay id' })
   id: number;
 
-  @Column('int')
+  @Column('int', { unique: true })
   @Field(() => Int, { description: 'The Pin related to this relay' })
   pinOut: number;
 }

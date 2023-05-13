@@ -1,9 +1,17 @@
 import type { Meta } from '@storybook/react';
-import { App } from './app';
-import { GET_ALL_VESSELS } from './queries/vessel-queries';
-const Story: Meta<typeof App> = {
-  component: App,
-  title: 'App',
+import { DashboardPage } from './dashboard-page';
+import { withRouter } from 'storybook-addon-react-router-v6';
+import { GET_ALL_VESSELS } from '../queries/vessel-queries';
+
+const Story: Meta<typeof DashboardPage> = {
+  component: DashboardPage,
+  title: 'DashboardPage',
+  decorators: [withRouter],
+  parameters: {
+    reactRouter: {
+      routePath: '/',
+    },
+  },
 };
 export default Story;
 
@@ -20,7 +28,7 @@ export const SingleVessel = {
           },
           result: {
             data: {
-              vessel: [{ id: 1, name: 'HLT' }],
+              vessels: [{ id: 1, name: 'HLT' }],
             },
           },
         },
@@ -41,7 +49,7 @@ export const ThreeVessels = {
           },
           result: {
             data: {
-              vessel: [
+              vessels: [
                 { id: 1, name: 'HLT' },
                 { id: 2, name: 'Mash Tun' },
                 { id: 3, name: 'Kettle' },

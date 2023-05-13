@@ -2,7 +2,8 @@ import '../src/styles.css';
 import { withThemeByClassName } from '@storybook/addon-styling';
 import { Preview } from '@storybook/react';
 import { MockedProvider } from '@apollo/client/testing';
-import { themes } from '@storybook/theming';
+import { themes, ensure } from '@storybook/theming';
+
 const preview: Preview = {
   parameters: {
     apolloClient: {

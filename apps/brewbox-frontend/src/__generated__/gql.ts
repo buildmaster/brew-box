@@ -13,7 +13,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query Vessels {\n    vessels {\n      id\n      name\n    }\n  }\n": types.VesselsDocument,
+    "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n": types.PumpsDocument,
+    "\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n": types.AllTemperatureUpdatesDocument,
+    "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n": types.VesselsDocument,
+    "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n": types.VesselsWithProbesDocument,
 };
 
 /**
@@ -33,7 +36,19 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n    }\n  }\n"];
+export function graphql(source: "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n"): (typeof documents)["\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n"): (typeof documents)["\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"): (typeof documents)["\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

@@ -69,7 +69,6 @@ const burnerOn = (
  * Represents a Brewing Vessel
  */
 export function Vessel(props: VesselProps) {
-  const [temperature] = useState(props.Temperature || 0);
   const [setpointTemperature, setSetpointTemperature] = useState(
     props.SetpointTemperature || 0
   );
@@ -89,7 +88,6 @@ export function Vessel(props: VesselProps) {
               xmlns="http://www.w3.org/2000/svg"
               xmlnsXlink="http://www.w3.org/1999/xlink"
               viewBox="0 0 700 700"
-              {...props}
             >
               <defs>
                 <symbol id="a" overflow="visible">
@@ -175,7 +173,7 @@ export function Vessel(props: VesselProps) {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 text-center"
                   placeholder="0"
                   readOnly={true}
-                  value={temperature}
+                  value={props.Temperature}
                 />
               </div>
             </div>

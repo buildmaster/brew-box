@@ -1,12 +1,16 @@
-import { ObjectType, Field, Float, Int } from '@nestjs/graphql';
+import {
+  ObjectType,
+  Field,
+  Float,
+  Int,
+  GraphQLISODateTime,
+} from '@nestjs/graphql';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  Relation,
-  ManyToOne,
+  CreateDateColumn,
 } from 'typeorm';
-import { TemperatureProbe } from '../../temperature-probe/entities/temperature-probe.entity';
 
 @Entity()
 @ObjectType()
@@ -23,10 +27,16 @@ export class TemperatureReading {
   })
   temperature: number;
 
-  @ManyToOne(() => TemperatureProbe, (probe) => probe.readings)
-  @Field(() => TemperatureProbe, {
-    description: 'The Probe related to this reading',
+  @Column({ nullable: false })
+  @Field(() => String, {
+    description: 'The serial number of the Probe related to this reading',
     nullable: false,
   })
-  probe: TemperatureProbe;
+  serialNumber: string;
+  @CreateDateColumn({})
+  @Field(() => GraphQLISODateTime, {
+    description: 'date the reading was created',
+    nullable: false,
+  })
+  dateCreated: Date;
 }
