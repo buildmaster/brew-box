@@ -3,17 +3,12 @@ import { defineConfig, PluginOption } from 'vite';
 import react from '@vitejs/plugin-react';
 import viteTsConfigPaths from 'vite-tsconfig-paths';
 import graphqlLoader from 'vite-plugin-graphql-loader';
-import mkcert from 'vite-plugin-mkcert';
-import * as path from 'path';
 
 const plugins: PluginOption[] = [
   graphqlLoader(),
   react(),
   viteTsConfigPaths({
     root: '../../',
-  }),
-  mkcert({
-    savePath: path.join(process.cwd(), '.mkcert-ssh-cert'),
   }),
 ];
 

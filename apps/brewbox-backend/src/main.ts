@@ -7,20 +7,10 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app/app.module';
-import * as fs from 'fs';
-import * as path from 'path';
 import * as os from 'os';
 
 async function bootstrap() {
-  let httpsOptions = null;
-  httpsOptions = {
-    key: fs.readFileSync(path.join(process.cwd(), '.mkcert-ssh-cert/dev.pem')),
-    cert: fs.readFileSync(
-      path.join(process.cwd(), '.mkcert-ssh-cert/cert.pem')
-    ),
-  };
   const app = await NestFactory.create(AppModule, {
-    httpsOptions,
     cors: true,
     logger: ['log', 'error', 'warn', 'debug', 'verbose'],
   });

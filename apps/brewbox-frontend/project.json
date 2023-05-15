@@ -30,17 +30,11 @@
       "configurations": {
         "development": {
           "buildTarget": "brewbox-frontend:build:development",
-          "hmr": true,
-          "host": "raspberrypi.local",
-          "port": 5200,
-          "https": true
+          "hmr": true
         },
         "production": {
           "buildTarget": "brewbox-frontend:build:production",
-          "hmr": false,
-          "host": "raspberrypi.local",
-          "port": 5200,
-          "https": true
+          "hmr": false
         }
       }
     },
