@@ -1,6 +1,6 @@
 {
   "/graphql": {
-    "target": "http://localhost:3000",
+    "target": "https://raspberrypi.local:3000",
     "secure": false
   }
 }

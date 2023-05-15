@@ -13,16 +13,12 @@ import * as os from 'os';
 
 async function bootstrap() {
   let httpsOptions = null;
-  if (process.env.NODE_ENV === 'DEVELOPMENT') {
-    httpsOptions = {
-      key: fs.readFileSync(
-        path.join(process.cwd(), '.mkcert-ssh-cert/dev.pem')
-      ),
-      cert: fs.readFileSync(
-        path.join(process.cwd(), '.mkcert-ssh-cert/cert.pem')
-      ),
-    };
-  }
+  httpsOptions = {
+    key: fs.readFileSync(path.join(process.cwd(), '.mkcert-ssh-cert/dev.pem')),
+    cert: fs.readFileSync(
+      path.join(process.cwd(), '.mkcert-ssh-cert/cert.pem')
+    ),
+  };
   const app = await NestFactory.create(AppModule, {
     httpsOptions,
     cors: true,

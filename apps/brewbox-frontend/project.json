@@ -6,9 +6,7 @@
   "targets": {
     "build": {
       "executor": "@nrwl/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/apps/brewbox-frontend"
@@ -32,11 +30,17 @@
       "configurations": {
         "development": {
           "buildTarget": "brewbox-frontend:build:development",
-          "hmr": true
+          "hmr": true,
+          "host": "raspberrypi.local",
+          "port": 5200,
+          "https": true
         },
         "production": {
           "buildTarget": "brewbox-frontend:build:production",
-          "hmr": false
+          "hmr": false,
+          "host": "raspberrypi.local",
+          "port": 5200,
+          "https": true
         }
       }
     },
@@ -57,9 +61,7 @@
     },
     "test": {
       "executor": "@nrwl/vite:test",
-      "outputs": [
-        "coverage/apps/brewbox-frontend"
-      ],
+      "outputs": ["coverage/apps/brewbox-frontend"],
       "options": {
         "passWithNoTests": true,
         "reportsDirectory": "../../coverage/apps/brewbox-frontend"
@@ -67,13 +69,9 @@
     },
     "lint": {
       "executor": "@nrwl/linter:eslint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/brewbox-frontend/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/brewbox-frontend/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "serve-static": {
@@ -96,9 +94,7 @@
     },
     "build-storybook": {
       "executor": "@nrwl/storybook:build",
-      "outputs": [
-        "{options.outputDir}"
-      ],
+      "outputs": ["{options.outputDir}"],
       "options": {
         "outputDir": "dist/storybook/brewbox-frontend",
         "configDir": "apps/brewbox-frontend/.storybook"
