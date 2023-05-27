@@ -1,4 +1,4 @@
-import type { Meta } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { DashboardPage } from './dashboard-page';
 import { withRouter } from 'storybook-addon-react-router-v6';
 import { GET_ALL_VESSELS } from '../queries/vessel-queries';
@@ -15,7 +15,7 @@ const Story: Meta<typeof DashboardPage> = {
 };
 export default Story;
 
-export const SingleVessel = {
+export const SingleVessel: StoryObj<typeof DashboardPage> = {
   args: {},
   parameters: {
     apolloClient: {
@@ -36,7 +36,7 @@ export const SingleVessel = {
     },
   },
 };
-export const ThreeVessels = {
+export const ThreeVessels: StoryObj<typeof DashboardPage> = {
   args: {},
   parameters: {
     apolloClient: {

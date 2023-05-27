@@ -26,14 +26,24 @@ export const Filled = {
                 {
                   id: 1,
                   name: 'HLT',
-                  probe: { serial: 'probe_value_missing' },
-                  burner: { pinOut: 2 },
+                  probe: 'probe_value_missing',
+                  burner: 2,
                 },
                 {
                   id: 2,
+                  name: 'NO Burner defined',
+                  probe: 'probe_value_missing',
+                },
+                {
+                  id: 3,
+                  name: 'no probe defined',
+                  burner: 2,
+                },
+                {
+                  id: 4,
                   name: 'MASH',
-                  probe: { serial: 'mock_probe_1' },
-                  burner: { pinOut: 4 },
+                  probe: 'mock_probe_1',
+                  burner: 4,
                 },
               ],
             },

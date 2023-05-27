@@ -1,5 +1,8 @@
-import { useQuery } from '@apollo/client';
-import { GET_ALL_VESSELS_WITH_PROBES } from '../queries/vessel-queries';
+import { useMutation, useQuery } from '@apollo/client';
+import {
+  DELETE_VESSEL,
+  GET_ALL_VESSELS_WITH_PROBES,
+} from '../queries/vessel-queries';
 import { combineConditionalClassNames } from '../helpers';
 import { Link } from 'react-router-dom';
 
@@ -8,6 +11,7 @@ export interface VesselTableProps {}
 
 export function VesselTable(props: VesselTableProps) {
   const { loading, error, data } = useQuery(GET_ALL_VESSELS_WITH_PROBES);
+  const [deleteMutation] = useMutation(DELETE_VESSEL);
   if (loading) return <div>Loading...</div>;
   if (error) return <div>{`Error! ${error.message}`}</div>;
 
@@ -62,6 +66,12 @@ export function VesselTable(props: VesselTableProps) {
                       scope="col"
                       className="relative py-3.5 pl-3 pr-4 sm:pr-6"
                     >
+                      <span className="sr-only">Delete</span>
+                    </th>
+                    <th
+                      scope="col"
+                      className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                    >
                       <span className="sr-only">Edit</span>
                     </th>
                   </tr>
@@ -75,17 +85,34 @@ export function VesselTable(props: VesselTableProps) {
                       <td
                         className={combineConditionalClassNames(
                           data?.hardwareSerialNumbers.some(
-                            (sn) => sn === vessel.probe?.serial
+                            (sn) => sn === vessel.probe
                           ) || false
                             ? 'text-gray-500 dark:text-white'
                             : 'text-red-500',
                           'whitespace-nowrap px-3 py-4 text-sm '
                         )}
                       >
-                        {vessel.probe?.serial}
+                        {vessel.probe}
                       </td>
                       <td className="whitespace-nowrap px-3 py-4 text-sm dark:text-white text-gray-500">
-                        {vessel.burner?.pinOut}
+                        {vessel.burner}
+                      </td>
+                      <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                        <Link
+                          to={`${vessel.id}`}
+                          className="text-indigo-600 hover:text-indigo-900"
+                          onClick={(ev) => {
+                            ev.preventDefault();
+                            deleteMutation({
+                              variables: {
+                                id: vessel.id,
+                              },
+                              refetchQueries: [GET_ALL_VESSELS_WITH_PROBES],
+                            });
+                          }}
+                        >
+                          Delete<span className="sr-only">, {vessel.name}</span>
+                        </Link>
                       </td>
                       <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                         <Link

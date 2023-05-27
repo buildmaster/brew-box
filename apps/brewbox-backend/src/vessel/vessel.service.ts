@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVesselInput } from './dto/create-vessel.input';
-import { UpdateVesselInput } from './dto/update-vessel.input';
+import { CreateOrUpdateVesselInput } from './dto/create-vessel.input';
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -16,50 +15,59 @@ export class VesselService {
     @InjectRepository(BurnerRelay)
     private burnerRepository: Repository<BurnerRelay>
   ) {}
-  create(createVesselInput: CreateVesselInput) {
+  create(createVesselInput: CreateOrUpdateVesselInput) {
     // find the probe associated with the serial number
     console.log('getting serial numbers');
     const serialNumbers = TemperatureProbeService.getAllHardwareSerialNumbers();
-    if (!serialNumbers.some((sn) => createVesselInput.probeSerial === sn)) {
+    if (
+      createVesselInput.probe &&
+      !serialNumbers.some((sn) => createVesselInput.probe === sn)
+    ) {
       console.log('no serial');
       throw new Error('No serial number matching an existing probe');
     } else {
-      return Promise.all([
-        this.burnerRepository.findOneBy({
-          pinOut: createVesselInput.burnerPin,
-        }),
-      ]).then(([burner]) => {
-        console.log('creating vessel');
+      console.log('creating vessel');
+      if (createVesselInput.id) {
+        return this.vesselRepository
+          .update(
+            { id: createVesselInput.id },
+            {
+              name: createVesselInput.name,
+              probe: createVesselInput.probe,
+              burner: createVesselInput.burner,
+            }
+          )
+          .then((result) => {
+            return {
+              id: createVesselInput.id,
+              name: createVesselInput.name,
+              probe: createVesselInput.probe,
+              burner: createVesselInput.burner,
+            };
+          });
+      } else {
         return this.vesselRepository.save(
           this.vesselRepository.create({
             name: createVesselInput.name,
-            probe: createVesselInput.probeSerial,
-            burner: burner || {
-              pinOut: createVesselInput.burnerPin,
-            },
+            probe: createVesselInput.probe,
+            burner: createVesselInput.burner,
           })
         );
-      });
+      }
     }
   }
 
   findAll() {
-    return this.vesselRepository.find({
-      relations: {
-        burner: true,
-      },
-    });
+    return this.vesselRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} vessel`;
-  }
-
-  update(id: number, updateVesselInput: UpdateVesselInput) {
-    return `This action updates a #${id} vessel`;
+    return this.vesselRepository.findOne({
+      where: { id },
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} vessel`;
+    return this.vesselRepository.delete({ id }).then(() => id);
   }
 }

@@ -36,14 +36,10 @@ export class Vessel {
   })
   probe?: string;
 
-  @OneToOne(() => BurnerRelay, (relay) => relay.vessel, {
-    nullable: true,
-    cascade: true,
-  })
-  @Field(() => BurnerRelay, {
+  @Field(() => Int, {
     description: 'Burner under the vessel',
     nullable: true,
   })
-  @JoinColumn()
-  burner: BurnerRelay;
+  @Column('int', { nullable: true })
+  burner?: number;
 }

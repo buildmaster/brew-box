@@ -7,7 +7,7 @@ generates[path.resolve(__dirname, './src/__generated__/') + '/'] = {
 };
 console.log({ generates });
 const config: CodegenConfig = {
-  schema: 'http://localhost:3000/graphql',
+  schema: 'http://0.0.0.0:3000/graphql',
   documents: [`${__dirname}/src/**/*.tsx`, `${__dirname}/src/app/queries/*.ts`],
   generates,
   ignoreNoDocuments: true,

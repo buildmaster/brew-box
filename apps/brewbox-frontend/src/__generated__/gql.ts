@@ -15,8 +15,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
 const documents = {
     "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n": types.PumpsDocument,
     "\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n": types.AllTemperatureUpdatesDocument,
-    "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n": types.VesselsDocument,
-    "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n": types.VesselsWithProbesDocument,
+    "\n  query TemperatureProbes {\n    hardwareSerialNumbers\n  }\n": types.TemperatureProbesDocument,
+    "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselsDocument,
+    "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselsWithProbesDocument,
+    "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselDocument,
+    "\n  mutation CreateOrUpdateVessel(\n    $createOrUpdateVesselInput: CreateOrUpdateVesselInput!\n  ) {\n    createOrUpdateVessel(\n      createOrUpdateVesselInput: $createOrUpdateVesselInput\n    ) {\n      name\n    }\n  }\n": types.CreateOrUpdateVesselDocument,
+    "\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n": types.RemoveVesselDocument,
 };
 
 /**
@@ -44,11 +48,27 @@ export function graphql(source: "\n  subscription AllTemperatureUpdates {\n    n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query TemperatureProbes {\n    hardwareSerialNumbers\n  }\n"): (typeof documents)["\n  query TemperatureProbes {\n    hardwareSerialNumbers\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"): (typeof documents)["\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner {\n        id\n        pinOut\n      }\n    }\n  }\n"];
+export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateOrUpdateVessel(\n    $createOrUpdateVesselInput: CreateOrUpdateVesselInput!\n  ) {\n    createOrUpdateVessel(\n      createOrUpdateVesselInput: $createOrUpdateVesselInput\n    ) {\n      name\n    }\n  }\n"): (typeof documents)["\n  mutation CreateOrUpdateVessel(\n    $createOrUpdateVesselInput: CreateOrUpdateVesselInput!\n  ) {\n    createOrUpdateVessel(\n      createOrUpdateVesselInput: $createOrUpdateVesselInput\n    ) {\n      name\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n"): (typeof documents)["\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};
