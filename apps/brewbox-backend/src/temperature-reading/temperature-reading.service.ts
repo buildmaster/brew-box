@@ -22,7 +22,7 @@ export class TemperatureReadingService {
     @InjectRepository(TemperatureReading)
     private entityRepository: Repository<TemperatureReading>,
     private eventEmitter: EventEmitter2,
-    @Inject('PROBE_PUB_SUB') private probePubSub: PubSub
+    @Inject('PUB_SUB') private probePubSub: PubSub
   ) {
     this.isRunningOnPi = isPi();
     setInterval(() => {
@@ -80,6 +80,9 @@ export class TemperatureReadingService {
       });
       this.entityRepository.insert(reading).then(() => {
         this.probePubSub.publish('NEW_TEMPERATURE_READING', {
+          newTemperatureReading: reading,
+        });
+        this.eventEmitter.emitAsync('NEW_TEMPERATURE_READING', {
           newTemperatureReading: reading,
         });
       });

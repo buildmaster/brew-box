@@ -17,7 +17,7 @@ import { PubSub } from 'graphql-subscriptions';
 export class TemperatureReadingResolver {
   constructor(
     private readonly temperatureReadingService: TemperatureReadingService,
-    @Inject('PROBE_PUB_SUB') private probePubSub: PubSub
+    @Inject('PUB_SUB') private probePubSub: PubSub
   ) {}
 
   @Mutation(() => TemperatureReading)

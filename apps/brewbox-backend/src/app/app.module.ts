@@ -16,6 +16,7 @@ import { Relay } from '../relay/entities/relay.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { Context } from 'graphql-ws';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
+import { PubSub } from 'graphql-subscriptions';
 
 @Module({
   imports: [
