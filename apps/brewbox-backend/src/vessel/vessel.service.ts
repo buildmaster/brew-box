@@ -97,7 +97,6 @@ export class VesselService {
       console.log(`ligting pin ${vessel.burner}`);
       open(vessel.burner, OUTPUT);
       write(vessel.burner, HIGH);
-      close(vessel.burner);
     }
     vessel.burnerLit = true;
     this.probePubSub.publish(
@@ -116,7 +115,6 @@ export class VesselService {
       console.log(`extingishing pin ${vessel.burner}`);
       open(vessel.burner, OUTPUT);
       write(vessel.burner, LOW);
-      close(vessel.burner);
     }
     vessel.burnerLit = false;
     this.probePubSub.publish(
