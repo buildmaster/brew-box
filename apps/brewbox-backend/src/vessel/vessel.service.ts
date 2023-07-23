@@ -42,6 +42,17 @@ export class VesselService {
     this.vesselRepository.find().then((existingVessels) => {
       this.activeVesselSubscriptions = [];
       existingVessels.forEach((vessel) => {
+        this.lightBurner(vessel);
+        this.extinguishBurner(vessel);
+        this.vesselRepository.update(
+          {
+            id: vessel.id,
+          },
+          {
+            burnerLit: false,
+            burnerMode: BurnerMode.OFF,
+          },
+        );
         this.subscribeVesselToStatusUpdates(vessel);
       });
     });
