@@ -94,6 +94,7 @@ export class VesselService {
   }
   async lightBurner(vessel: Vessel) {
     if (vessel.burner) {
+      console.log(`ligting pin ${vessel.burner}`);
       open(vessel.burner, INPUT);
       write(vessel.burner, HIGH);
       close(vessel.burner);
@@ -112,6 +113,7 @@ export class VesselService {
   }
   async extinguishBurner(vessel: Vessel) {
     if (vessel.burner) {
+      console.log(`extingishing pin ${vessel.burner}`);
       open(vessel.burner, INPUT);
       write(vessel.burner, LOW);
       close(vessel.burner);
