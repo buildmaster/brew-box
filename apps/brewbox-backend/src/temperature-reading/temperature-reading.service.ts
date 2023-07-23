@@ -12,7 +12,10 @@ import { PubSub } from 'graphql-subscriptions';
 import { SUBSCRIPTION_KEYS } from '../constants';
 
 class TemperatureReadingEvent {
-  constructor(public serial: string, public temp: number) {}
+  constructor(
+    public serial: string,
+    public temp: number,
+  ) {}
 }
 
 @Injectable()
@@ -22,7 +25,7 @@ export class TemperatureReadingService {
   constructor(
     @InjectRepository(TemperatureReading)
     private entityRepository: Repository<TemperatureReading>,
-    @Inject('PUB_SUB') private probePubSub: PubSub
+    @Inject('PUB_SUB') private probePubSub: PubSub,
   ) {
     this.isRunningOnPi = isPi();
     setInterval(() => {
@@ -44,7 +47,7 @@ export class TemperatureReadingService {
 
   update(
     id: number,
-    updateTemperatureReadingInput: UpdateTemperatureReadingInput
+    updateTemperatureReadingInput: UpdateTemperatureReadingInput,
   ) {
     return `This action updates a #${id} temperatureReading`;
   }
@@ -79,6 +82,9 @@ export class TemperatureReadingService {
         console.log({ sn, temp });
         this.mockTemperatureReadings[sn] = temp;
       }
+      if (!temp) {
+        temp = -1;
+      }
       const reading = this.entityRepository.create({
         temperature: temp,
         serialNumber: sn,
@@ -88,7 +94,7 @@ export class TemperatureReadingService {
           `${SUBSCRIPTION_KEYS.NEW_TEMPERATURE_READING}:${reading.serialNumber}`,
           {
             newTemperatureReading: reading,
-          }
+          },
         );
       });
     });
