@@ -14,13 +14,16 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  */
 const documents = {
     "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n": types.PumpsDocument,
-    "\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n": types.AllTemperatureUpdatesDocument,
+    "\n  subscription AllTemperatureUpdates($serialNumber: String!) {\n    newTemperatureReading(serialNumber: $serialNumber) {\n      temperature\n      serialNumber\n    }\n  }\n": types.AllTemperatureUpdatesDocument,
     "\n  query TemperatureProbes {\n    hardwareSerialNumbers\n  }\n": types.TemperatureProbesDocument,
-    "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselsDocument,
-    "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselsWithProbesDocument,
-    "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n": types.VesselDocument,
+    "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n": types.VesselsDocument,
+    "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n": types.VesselsWithProbesDocument,
+    "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n": types.VesselDocument,
     "\n  mutation CreateOrUpdateVessel(\n    $createOrUpdateVesselInput: CreateOrUpdateVesselInput!\n  ) {\n    createOrUpdateVessel(\n      createOrUpdateVesselInput: $createOrUpdateVesselInput\n    ) {\n      name\n    }\n  }\n": types.CreateOrUpdateVesselDocument,
     "\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n": types.RemoveVesselDocument,
+    "\n  mutation updateSetpoint($id: Int!, $temp: Float!) {\n    updateSetpointTemperature(id: $id, setpoint: $temp)\n  }\n": types.UpdateSetpointDocument,
+    "\n  mutation updateBurnerMode($id: Int!, $burnerMode: BurnerMode!) {\n    updateBurnerMode(id: $id, burnerMode: $burnerMode)\n  }\n": types.UpdateBurnerModeDocument,
+    "\n  subscription subscribeToBurnerChange($id: Int!) {\n    burnerChange(id: $id) {\n      burnerLit\n      burnerMode\n      id\n    }\n  }\n": types.SubscribeToBurnerChangeDocument,
 };
 
 /**
@@ -44,7 +47,7 @@ export function graphql(source: "\n  query Pumps {\n    pumpRelays {\n      id\n
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n"): (typeof documents)["\n  subscription AllTemperatureUpdates {\n    newTemperatureReading {\n      temperature\n      serialNumber\n    }\n  }\n"];
+export function graphql(source: "\n  subscription AllTemperatureUpdates($serialNumber: String!) {\n    newTemperatureReading(serialNumber: $serialNumber) {\n      temperature\n      serialNumber\n    }\n  }\n"): (typeof documents)["\n  subscription AllTemperatureUpdates($serialNumber: String!) {\n    newTemperatureReading(serialNumber: $serialNumber) {\n      temperature\n      serialNumber\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -52,15 +55,15 @@ export function graphql(source: "\n  query TemperatureProbes {\n    hardwareSeri
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+export function graphql(source: "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"): (typeof documents)["\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+export function graphql(source: "\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"): (typeof documents)["\n  query VesselsWithProbes {\n    hardwareSerialNumbers\n\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"): (typeof documents)["\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n    }\n  }\n"];
+export function graphql(source: "\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"): (typeof documents)["\n  query Vessel($id: Int!) {\n    hardwareSerialNumbers\n    vessel(id: $id) {\n      name\n      id\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
@@ -69,6 +72,18 @@ export function graphql(source: "\n  mutation CreateOrUpdateVessel(\n    $create
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(source: "\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n"): (typeof documents)["\n  mutation removeVessel($id: Int!) {\n    removeVessel(id: $id)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation updateSetpoint($id: Int!, $temp: Float!) {\n    updateSetpointTemperature(id: $id, setpoint: $temp)\n  }\n"): (typeof documents)["\n  mutation updateSetpoint($id: Int!, $temp: Float!) {\n    updateSetpointTemperature(id: $id, setpoint: $temp)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation updateBurnerMode($id: Int!, $burnerMode: BurnerMode!) {\n    updateBurnerMode(id: $id, burnerMode: $burnerMode)\n  }\n"): (typeof documents)["\n  mutation updateBurnerMode($id: Int!, $burnerMode: BurnerMode!) {\n    updateBurnerMode(id: $id, burnerMode: $burnerMode)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription subscribeToBurnerChange($id: Int!) {\n    burnerChange(id: $id) {\n      burnerLit\n      burnerMode\n      id\n    }\n  }\n"): (typeof documents)["\n  subscription subscribeToBurnerChange($id: Int!) {\n    burnerChange(id: $id) {\n      burnerLit\n      burnerMode\n      id\n    }\n  }\n"];
 
 export function graphql(source: string) {
   return (documents as any)[source] ?? {};

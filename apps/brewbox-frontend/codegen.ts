@@ -11,6 +11,7 @@ const config: CodegenConfig = {
   documents: [`${__dirname}/src/**/*.tsx`, `${__dirname}/src/app/queries/*.ts`],
   generates,
   ignoreNoDocuments: true,
+  watch: [`${__dirname}/src/**/*.tsx`, `${__dirname}/src/app/queries/*.ts`],
 };
 
 export default config;

@@ -9,7 +9,7 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string | number; output: string; }
+  ID: { input: string; output: string; }
   String: { input: string; output: string; }
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
@@ -17,6 +17,22 @@ export type Scalars = {
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: { input: any; output: any; }
 };
+
+export type BurnerChange = {
+  __typename?: 'BurnerChange';
+  /** If the vessel is lit */
+  burnerLit: Scalars['Boolean']['output'];
+  /** Burner mode of the vessel */
+  burnerMode: BurnerMode;
+  /** Id of the vessel */
+  id: Scalars['Int']['output'];
+};
+
+export enum BurnerMode {
+  Auto = 'AUTO',
+  Off = 'OFF',
+  On = 'ON'
+}
 
 export type BurnerRelay = {
   __typename?: 'BurnerRelay';
@@ -64,8 +80,10 @@ export type Mutation = {
   removePumpRelay: PumpRelay;
   removeTemperatureReading: TemperatureReading;
   removeVessel: Scalars['Int']['output'];
+  updateBurnerMode: Scalars['Boolean']['output'];
   updateBurnerRelay: BurnerRelay;
   updatePumpRelay: PumpRelay;
+  updateSetpointTemperature: Scalars['Boolean']['output'];
   updateTemperatureReading: TemperatureReading;
 };
 
@@ -110,6 +128,12 @@ export type MutationRemoveVesselArgs = {
 };
 
 
+export type MutationUpdateBurnerModeArgs = {
+  burnerMode: BurnerMode;
+  id: Scalars['Int']['input'];
+};
+
+
 export type MutationUpdateBurnerRelayArgs = {
   updateBurnerRelayInput: UpdateBurnerRelayInput;
 };
@@ -117,6 +141,12 @@ export type MutationUpdateBurnerRelayArgs = {
 
 export type MutationUpdatePumpRelayArgs = {
   updatePumpRelayInput: UpdatePumpRelayInput;
+};
+
+
+export type MutationUpdateSetpointTemperatureArgs = {
+  id: Scalars['Int']['input'];
+  setpoint: Scalars['Float']['input'];
 };
 
 
@@ -167,7 +197,18 @@ export type QueryVesselArgs = {
 
 export type Subscription = {
   __typename?: 'Subscription';
+  burnerChange: BurnerChange;
   newTemperatureReading: TemperatureReading;
+};
+
+
+export type SubscriptionBurnerChangeArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type SubscriptionNewTemperatureReadingArgs = {
+  serialNumber: Scalars['String']['input'];
 };
 
 export type TemperatureReading = {
@@ -204,6 +245,10 @@ export type Vessel = {
   __typename?: 'Vessel';
   /** Burner under the vessel */
   burner?: Maybe<Scalars['Int']['output']>;
+  /** Status of the buner below the vessel */
+  burnerLit: Scalars['Boolean']['output'];
+  /** Mode for the burner under the vessel */
+  burnerMode: BurnerMode;
   /** Id of the vessel */
   id: Scalars['Int']['output'];
   /** Last temperature read */
@@ -212,6 +257,8 @@ export type Vessel = {
   name: Scalars['String']['output'];
   /** Probe on this vessel */
   probe?: Maybe<Scalars['String']['output']>;
+  /** Temperature that the vessel is set to turn on below and off above */
+  setpointTemperature: Scalars['Float']['output'];
 };
 
 export type PumpsQueryVariables = Exact<{ [key: string]: never; }>;
@@ -219,7 +266,9 @@ export type PumpsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type PumpsQuery = { __typename?: 'Query', pumpRelays: Array<{ __typename?: 'PumpRelay', id: number, pinOut: number }> };
 
-export type AllTemperatureUpdatesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+export type AllTemperatureUpdatesSubscriptionVariables = Exact<{
+  serialNumber: Scalars['String']['input'];
+}>;
 
 
 export type AllTemperatureUpdatesSubscription = { __typename?: 'Subscription', newTemperatureReading: { __typename?: 'TemperatureReading', temperature: number, serialNumber: string } };
@@ -232,19 +281,19 @@ export type TemperatureProbesQuery = { __typename?: 'Query', hardwareSerialNumbe
 export type VesselsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VesselsQuery = { __typename?: 'Query', vessels: Array<{ __typename?: 'Vessel', id: number, name: string, lastTemperature?: number | null, probe?: string | null, burner?: number | null }> };
+export type VesselsQuery = { __typename?: 'Query', vessels: Array<{ __typename?: 'Vessel', id: number, name: string, lastTemperature?: number | null, probe?: string | null, burner?: number | null, setpointTemperature: number, burnerMode: BurnerMode, burnerLit: boolean }> };
 
 export type VesselsWithProbesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type VesselsWithProbesQuery = { __typename?: 'Query', hardwareSerialNumbers: Array<string>, vessels: Array<{ __typename?: 'Vessel', id: number, name: string, lastTemperature?: number | null, probe?: string | null, burner?: number | null }> };
+export type VesselsWithProbesQuery = { __typename?: 'Query', hardwareSerialNumbers: Array<string>, vessels: Array<{ __typename?: 'Vessel', id: number, name: string, lastTemperature?: number | null, probe?: string | null, burner?: number | null, setpointTemperature: number, burnerMode: BurnerMode, burnerLit: boolean }> };
 
 export type VesselQueryVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type VesselQuery = { __typename?: 'Query', hardwareSerialNumbers: Array<string>, vessel: { __typename?: 'Vessel', name: string, id: number, lastTemperature?: number | null, probe?: string | null, burner?: number | null } };
+export type VesselQuery = { __typename?: 'Query', hardwareSerialNumbers: Array<string>, vessel: { __typename?: 'Vessel', name: string, id: number, lastTemperature?: number | null, probe?: string | null, burner?: number | null, setpointTemperature: number, burnerMode: BurnerMode, burnerLit: boolean } };
 
 export type CreateOrUpdateVesselMutationVariables = Exact<{
   createOrUpdateVesselInput: CreateOrUpdateVesselInput;
@@ -260,12 +309,38 @@ export type RemoveVesselMutationVariables = Exact<{
 
 export type RemoveVesselMutation = { __typename?: 'Mutation', removeVessel: number };
 
+export type UpdateSetpointMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  temp: Scalars['Float']['input'];
+}>;
+
+
+export type UpdateSetpointMutation = { __typename?: 'Mutation', updateSetpointTemperature: boolean };
+
+export type UpdateBurnerModeMutationVariables = Exact<{
+  id: Scalars['Int']['input'];
+  burnerMode: BurnerMode;
+}>;
+
+
+export type UpdateBurnerModeMutation = { __typename?: 'Mutation', updateBurnerMode: boolean };
+
+export type SubscribeToBurnerChangeSubscriptionVariables = Exact<{
+  id: Scalars['Int']['input'];
+}>;
+
+
+export type SubscribeToBurnerChangeSubscription = { __typename?: 'Subscription', burnerChange: { __typename?: 'BurnerChange', burnerLit: boolean, burnerMode: BurnerMode, id: number } };
+
 
 export const PumpsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Pumps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pumpRelays"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"pinOut"}}]}}]}}]} as unknown as DocumentNode<PumpsQuery, PumpsQueryVariables>;
-export const AllTemperatureUpdatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"AllTemperatureUpdates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"newTemperatureReading"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"temperature"}},{"kind":"Field","name":{"kind":"Name","value":"serialNumber"}}]}}]}}]} as unknown as DocumentNode<AllTemperatureUpdatesSubscription, AllTemperatureUpdatesSubscriptionVariables>;
+export const AllTemperatureUpdatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"AllTemperatureUpdates"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serialNumber"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"newTemperatureReading"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"serialNumber"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serialNumber"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"temperature"}},{"kind":"Field","name":{"kind":"Name","value":"serialNumber"}}]}}]}}]} as unknown as DocumentNode<AllTemperatureUpdatesSubscription, AllTemperatureUpdatesSubscriptionVariables>;
 export const TemperatureProbesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"TemperatureProbes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hardwareSerialNumbers"}}]}}]} as unknown as DocumentNode<TemperatureProbesQuery, TemperatureProbesQueryVariables>;
-export const VesselsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}}]}}]}}]} as unknown as DocumentNode<VesselsQuery, VesselsQueryVariables>;
-export const VesselsWithProbesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"VesselsWithProbes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hardwareSerialNumbers"}},{"kind":"Field","name":{"kind":"Name","value":"vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}}]}}]}}]} as unknown as DocumentNode<VesselsWithProbesQuery, VesselsWithProbesQueryVariables>;
-export const VesselDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Vessel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hardwareSerialNumbers"}},{"kind":"Field","name":{"kind":"Name","value":"vessel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}}]}}]}}]} as unknown as DocumentNode<VesselQuery, VesselQueryVariables>;
+export const VesselsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}},{"kind":"Field","name":{"kind":"Name","value":"setpointTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"burnerMode"}},{"kind":"Field","name":{"kind":"Name","value":"burnerLit"}}]}}]}}]} as unknown as DocumentNode<VesselsQuery, VesselsQueryVariables>;
+export const VesselsWithProbesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"VesselsWithProbes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hardwareSerialNumbers"}},{"kind":"Field","name":{"kind":"Name","value":"vessels"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}},{"kind":"Field","name":{"kind":"Name","value":"setpointTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"burnerMode"}},{"kind":"Field","name":{"kind":"Name","value":"burnerLit"}}]}}]}}]} as unknown as DocumentNode<VesselsWithProbesQuery, VesselsWithProbesQueryVariables>;
+export const VesselDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Vessel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hardwareSerialNumbers"}},{"kind":"Field","name":{"kind":"Name","value":"vessel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"lastTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"probe"}},{"kind":"Field","name":{"kind":"Name","value":"burner"}},{"kind":"Field","name":{"kind":"Name","value":"setpointTemperature"}},{"kind":"Field","name":{"kind":"Name","value":"burnerMode"}},{"kind":"Field","name":{"kind":"Name","value":"burnerLit"}}]}}]}}]} as unknown as DocumentNode<VesselQuery, VesselQueryVariables>;
 export const CreateOrUpdateVesselDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateOrUpdateVessel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createOrUpdateVesselInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateOrUpdateVesselInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createOrUpdateVessel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createOrUpdateVesselInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createOrUpdateVesselInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<CreateOrUpdateVesselMutation, CreateOrUpdateVesselMutationVariables>;
 export const RemoveVesselDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"removeVessel"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removeVessel"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<RemoveVesselMutation, RemoveVesselMutationVariables>;
+export const UpdateSetpointDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateSetpoint"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"temp"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateSetpointTemperature"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"setpoint"},"value":{"kind":"Variable","name":{"kind":"Name","value":"temp"}}}]}]}}]} as unknown as DocumentNode<UpdateSetpointMutation, UpdateSetpointMutationVariables>;
+export const UpdateBurnerModeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"updateBurnerMode"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"burnerMode"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"BurnerMode"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateBurnerMode"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}},{"kind":"Argument","name":{"kind":"Name","value":"burnerMode"},"value":{"kind":"Variable","name":{"kind":"Name","value":"burnerMode"}}}]}]}}]} as unknown as DocumentNode<UpdateBurnerModeMutation, UpdateBurnerModeMutationVariables>;
+export const SubscribeToBurnerChangeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"subscribeToBurnerChange"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"burnerChange"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"burnerLit"}},{"kind":"Field","name":{"kind":"Name","value":"burnerMode"}},{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SubscribeToBurnerChangeSubscription, SubscribeToBurnerChangeSubscriptionVariables>;

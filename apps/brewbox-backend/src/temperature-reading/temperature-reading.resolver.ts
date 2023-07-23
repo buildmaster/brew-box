@@ -12,6 +12,7 @@ import { CreateTemperatureReadingInput } from './dto/create-temperature-reading.
 import { UpdateTemperatureReadingInput } from './dto/update-temperature-reading.input';
 import { Inject } from '@nestjs/common';
 import { PubSub } from 'graphql-subscriptions';
+import { SUBSCRIPTION_KEYS } from '../constants';
 
 @Resolver(() => TemperatureReading)
 export class TemperatureReadingResolver {
@@ -57,7 +58,11 @@ export class TemperatureReadingResolver {
   @Subscription(() => TemperatureReading, {
     name: 'newTemperatureReading',
   })
-  subscribeToNewTemperatureReading() {
-    return this.probePubSub.asyncIterator('NEW_TEMPERATURE_READING');
+  subscribeToNewTemperatureReading(
+    @Args('serialNumber', { type: () => String }) serialNumber: string
+  ) {
+    return this.probePubSub.asyncIterator(
+      `${SUBSCRIPTION_KEYS.NEW_TEMPERATURE_READING}:${serialNumber}`
+    );
   }
 }

@@ -27,9 +27,9 @@ import { PubSub } from 'graphql-subscriptions';
       synchronize: true,
       logging: false,
     }),
-    VesselModule,
     TemperatureProbeModule,
     TemperatureReadingModule,
+    VesselModule,
     BurnerRelayModule,
     PumpRelayModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({

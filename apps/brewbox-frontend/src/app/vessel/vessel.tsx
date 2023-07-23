@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export enum BurnerMode {
-  On = 'On',
-  Off = 'Off',
-  Auto = 'Auto',
+  On = 'ON',
+  Off = 'OFF',
+  Auto = 'AUTO',
 }
 
 export interface VesselProps {
@@ -28,6 +28,10 @@ export interface VesselProps {
    * The mode of the burner
    */
   BurnerMode: BurnerMode;
+  subscribeToNewTemperatures: any;
+  onSetPointTemperatureChange: (setPointTemperature: number) => void;
+  subscribeToBurnerUpdates: any;
+  onBurnerModeChange: (burnerMode: BurnerMode) => void;
 }
 
 const burnerOff = (
@@ -70,9 +74,11 @@ const burnerOn = (
  */
 export function Vessel(props: VesselProps) {
   const [setpointTemperature, setSetpointTemperature] = useState(
-    props.SetpointTemperature || 0
+    props.SetpointTemperature || 0,
   );
   const [burnerMode, setBurnerMode] = useState(props.BurnerMode || 'Off');
+  useEffect(() => props.subscribeToNewTemperatures(), []);
+  useEffect(() => props.subscribeToBurnerUpdates(), []);
   return (
     <div className="divide-y divide-gray-200 dark:divide-gray-800 overflow-hidden rounded-lg bg-white dark:bg-gray-600 shadow">
       <div className="px-4 py-5 sm:px-6">
@@ -202,6 +208,9 @@ export function Vessel(props: VesselProps) {
                     }
                     setSetpointTemperature(newValue);
                   }}
+                  onBlur={() => {
+                    props.onSetPointTemperatureChange(setpointTemperature);
+                  }}
                 />
               </div>
             </div>
@@ -220,6 +229,7 @@ export function Vessel(props: VesselProps) {
               <div className="sm:col-span-4 mt-2 sm:mt-0 h-10">
                 <button
                   onClick={() => {
+                    props.onBurnerModeChange(BurnerMode.On);
                     setBurnerMode(BurnerMode.On);
                   }}
                   type="button"
@@ -244,7 +254,7 @@ export function Vessel(props: VesselProps) {
                             'text-gray-900',
                             'ring-gray-300',
                             'hover:bg-gray-50',
-                          ]
+                          ],
                     )
                     .join(' ')}
                 >
@@ -253,6 +263,7 @@ export function Vessel(props: VesselProps) {
                 <button
                   type="button"
                   onClick={() => {
+                    props.onBurnerModeChange(BurnerMode.Off);
                     setBurnerMode(BurnerMode.Off);
                   }}
                   className={[
@@ -276,7 +287,7 @@ export function Vessel(props: VesselProps) {
                             'text-gray-900',
                             'ring-gray-300',
                             'hover:bg-gray-50',
-                          ]
+                          ],
                     )
                     .join(' ')}
                 >
@@ -285,6 +296,7 @@ export function Vessel(props: VesselProps) {
                 <button
                   type="button"
                   onClick={() => {
+                    props.onBurnerModeChange(BurnerMode.Auto);
                     setBurnerMode(BurnerMode.Auto);
                   }}
                   className={[
@@ -309,7 +321,7 @@ export function Vessel(props: VesselProps) {
                             'text-gray-900',
                             'ring-gray-300',
                             'hover:bg-gray-50',
-                          ]
+                          ],
                     )
                     .join(' ')}
                 >

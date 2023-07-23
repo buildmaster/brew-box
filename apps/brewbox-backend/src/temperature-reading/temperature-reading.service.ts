@@ -6,9 +6,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import isPi from 'detect-rpi';
 import sensor from 'ds18b20-raspi-typescript';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { OnEvent } from '@nestjs/event-emitter';
 import { TemperatureProbeService } from '../temperature-probe/temperature-probe.service';
 import { PubSub } from 'graphql-subscriptions';
+import { SUBSCRIPTION_KEYS } from '../constants';
 
 class TemperatureReadingEvent {
   constructor(public serial: string, public temp: number) {}
@@ -21,7 +22,6 @@ export class TemperatureReadingService {
   constructor(
     @InjectRepository(TemperatureReading)
     private entityRepository: Repository<TemperatureReading>,
-    private eventEmitter: EventEmitter2,
     @Inject('PUB_SUB') private probePubSub: PubSub
   ) {
     this.isRunningOnPi = isPi();
@@ -61,17 +61,22 @@ export class TemperatureReadingService {
     const hardwareSerialNumbers =
       TemperatureProbeService.getAllHardwareSerialNumbers();
     hardwareSerialNumbers.forEach((sn) => {
-      let temp;
+      let temp: number;
       if (this.isRunningOnPi) {
         temp = sensor.readC(sn, 4);
       } else {
         this.mockTemperatureReadings = this.mockTemperatureReadings || {};
+        const randomFactor = Math.random() * 2.9;
+        const modifier = randomFactor.toFixed(2);
+        console.log({ randomFactor, modifier });
         temp =
           (this.mockTemperatureReadings[sn] || 20.2) +
-          Number.parseFloat((Math.random() % 2).toFixed());
+          Number.parseFloat(modifier);
+        temp = Number.parseFloat(temp.toFixed(2));
         if (temp > 100) {
           temp = 20.2;
         }
+        console.log({ sn, temp });
         this.mockTemperatureReadings[sn] = temp;
       }
       const reading = this.entityRepository.create({
@@ -79,12 +84,12 @@ export class TemperatureReadingService {
         serialNumber: sn,
       });
       this.entityRepository.insert(reading).then(() => {
-        this.probePubSub.publish('NEW_TEMPERATURE_READING', {
-          newTemperatureReading: reading,
-        });
-        this.eventEmitter.emitAsync('NEW_TEMPERATURE_READING', {
-          newTemperatureReading: reading,
-        });
+        this.probePubSub.publish(
+          `${SUBSCRIPTION_KEYS.NEW_TEMPERATURE_READING}:${reading.serialNumber}`,
+          {
+            newTemperatureReading: reading,
+          }
+        );
       });
     });
   }

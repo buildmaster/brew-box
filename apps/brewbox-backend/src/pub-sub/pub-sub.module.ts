@@ -14,4 +14,8 @@ import { PubSub } from 'graphql-subscriptions';
   ],
   exports: ['PUB_SUB'],
 })
-export class PubSubModule {}
+export class PubSubModule {
+  public static Keys: {
+    NEW_TEMPERATURE_READING: 'NEW_TEMPERATURE_READING';
+  };
+}

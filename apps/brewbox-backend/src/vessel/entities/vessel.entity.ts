@@ -1,12 +1,20 @@
-import { ObjectType, Field, Int, Float } from '@nestjs/graphql';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
-import { BurnerRelay } from '../../burner-relay/entities/burner-relay.entity';
+  ObjectType,
+  Field,
+  Int,
+  Float,
+  registerEnumType,
+} from '@nestjs/graphql';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+
+export enum BurnerMode {
+  OFF = 'off',
+  ON = 'on',
+  AUTO = 'auto',
+}
+registerEnumType(BurnerMode, {
+  name: 'BurnerMode',
+});
 
 @Entity()
 @ObjectType()
@@ -42,4 +50,32 @@ export class Vessel {
   })
   @Column('int', { nullable: true })
   burner?: number;
+
+  @Field(() => Float, {
+    description:
+      'Temperature that the vessel is set to turn on below and off above',
+    nullable: false,
+    defaultValue: 0,
+  })
+  @Column('decimal', { scale: 2, precision: 5, nullable: false, default: 0 })
+  setpointTemperature: number;
+
+  @Field(() => Boolean, {
+    description: 'Status of the buner below the vessel',
+    nullable: false,
+    defaultValue: false,
+  })
+  @Column('boolean', { nullable: false, default: false })
+  burnerLit: boolean;
+
+  @Column('simple-enum', {
+    enum: [BurnerMode.ON, BurnerMode.OFF, BurnerMode.AUTO],
+    default: BurnerMode.OFF,
+  })
+  @Field(() => BurnerMode, {
+    description: 'Mode for the burner under the vessel',
+    nullable: false,
+    defaultValue: BurnerMode.OFF,
+  })
+  burnerMode: BurnerMode;
 }
