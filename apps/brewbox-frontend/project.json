@@ -99,6 +99,14 @@
         }
       }
     },
+    "pm2": {
+      "executor": "nx-pm2-plugin:pm2-executor",
+      "options": {
+        "command": "brewbox-frontend:serve:production",
+        "name": "brewbox-frontend",
+        "autorestart": true
+      }
+    },
     "static-storybook": {
       "executor": "@nrwl/web:file-server",
       "options": {

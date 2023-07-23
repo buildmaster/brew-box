@@ -38,6 +38,14 @@
         }
       }
     },
+    "pm2": {
+      "executor": "nx-pm2-plugin:pm2-executor",
+      "options": {
+        "command": "brewbox-backend:serve:production",
+        "name": "brewbox-backend",
+        "autorestart": true
+      }
+    },
     "lint": {
       "executor": "@nrwl/linter:eslint",
       "outputs": ["{options.outputFile}"],
