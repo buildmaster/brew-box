@@ -10,6 +10,7 @@ import { PubSub } from 'graphql-subscriptions';
 import { SUBSCRIPTION_KEYS } from '../constants';
 import { TemperatureReading } from '../temperature-reading/entities/temperature-reading.entity';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { init, HIGH, LOW, open, close, INPUT, write } from 'rpio';
 
 @ObjectType()
 export class BurnerChange {
@@ -30,6 +31,7 @@ export class BurnerChange {
 @Injectable()
 export class VesselService {
   activeVesselSubscriptions: number[];
+  isRunningOnPi: boolean;
   constructor(
     @InjectRepository(Vessel)
     private vesselRepository: Repository<Vessel>,
@@ -43,6 +45,7 @@ export class VesselService {
         this.subscribeVesselToStatusUpdates(vessel);
       });
     });
+    init({ mapping: 'gpio' });
   }
   subscribeVesselToStatusUpdates({
     id,
@@ -89,7 +92,12 @@ export class VesselService {
         this.activeVesselSubscriptions[id] = subscriptionId;
       });
   }
-  async lightBurner(vessel: Partial<Vessel>) {
+  async lightBurner(vessel: Vessel) {
+    if (vessel.burner) {
+      open(vessel.burner, INPUT);
+      write(vessel.burner, HIGH);
+      close(vessel.burner);
+    }
     vessel.burnerLit = true;
     this.probePubSub.publish(
       `${SUBSCRIPTION_KEYS.VESSEL_BURNER_CHANGE}:${vessel.id}`,
@@ -102,7 +110,12 @@ export class VesselService {
       },
     );
   }
-  async extinguishBurner(vessel: Partial<Vessel>) {
+  async extinguishBurner(vessel: Vessel) {
+    if (vessel.burner) {
+      open(vessel.burner, INPUT);
+      write(vessel.burner, LOW);
+      close(vessel.burner);
+    }
     vessel.burnerLit = false;
     this.probePubSub.publish(
       `${SUBSCRIPTION_KEYS.VESSEL_BURNER_CHANGE}:${vessel.id}`,
@@ -185,20 +198,23 @@ export class VesselService {
       });
   }
   async updateBurnerMode(id: number, burnerMode: BurnerMode): Promise<boolean> {
+    const vessel = await this.vesselRepository.findOneBy({ id });
+    if (!vessel) {
+      return;
+    }
     let burnerLit = false;
     if (burnerMode === BurnerMode.ON) {
-      this.lightBurner({ id, burnerMode, burnerLit } as Partial<Vessel>);
+      this.lightBurner(vessel);
       burnerLit = true;
     } else if (burnerMode === BurnerMode.OFF) {
-      this.extinguishBurner({ id, burnerMode, burnerLit });
+      this.extinguishBurner(vessel);
       burnerLit = false;
     } else {
-      const vessel = await this.vesselRepository.findOneBy({ id });
       if (vessel.lastTemperature - 2 < vessel.setpointTemperature) {
-        this.lightBurner({ id, burnerMode, burnerLit });
+        this.lightBurner(vessel);
         burnerLit = true;
       } else if (vessel.lastTemperature + 2 > vessel.setpointTemperature) {
-        this.extinguishBurner({ id, burnerMode, burnerLit });
+        this.extinguishBurner(vessel);
         burnerLit = false;
       }
     }
