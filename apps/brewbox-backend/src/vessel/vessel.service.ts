@@ -10,8 +10,8 @@ import { PubSub } from 'graphql-subscriptions';
 import { SUBSCRIPTION_KEYS } from '../constants';
 import { TemperatureReading } from '../temperature-reading/entities/temperature-reading.entity';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { init, HIGH, LOW, open, close, OUTPUT, write } from 'rpio';
-
+import { init, HIGH, LOW, open, OUTPUT, write } from 'rpio';
+const tempJitter = 0.5;
 @ObjectType()
 export class BurnerChange {
   @Field(() => Int, {
@@ -68,14 +68,14 @@ export class VesselService {
           if (vessel.burnerMode === BurnerMode.AUTO) {
             if (
               vessel.setpointTemperature >
-                newTemperatureReading.temperature + 2 &&
+                newTemperatureReading.temperature + tempJitter &&
               !vessel.burnerLit
             ) {
               await this.lightBurner(vessel);
               burnerLit = true;
             } else if (
               vessel.setpointTemperature <
-                newTemperatureReading.temperature - 2 &&
+                newTemperatureReading.temperature - tempJitter &&
               vessel.burnerLit
             ) {
               this.extinguishBurner(vessel);
@@ -196,10 +196,10 @@ export class VesselService {
     }
     let burnerLit = false;
     if (vessel.burnerMode === BurnerMode.AUTO) {
-      if (vessel.lastTemperature - 2 < setpoint) {
+      if (vessel.lastTemperature - tempJitter < setpoint) {
         this.lightBurner(vessel);
         burnerLit = true;
-      } else if (vessel.lastTemperature + 2 > setpoint) {
+      } else if (vessel.lastTemperature + tempJitter > setpoint) {
         this.extinguishBurner(vessel);
         burnerLit = false;
       }
@@ -228,10 +228,13 @@ export class VesselService {
       this.extinguishBurner(vessel);
       burnerLit = false;
     } else {
-      if (vessel.lastTemperature - 2 < vessel.setpointTemperature) {
+      if (vessel.lastTemperature - tempJitter < vessel.setpointTemperature) {
         this.lightBurner(vessel);
         burnerLit = true;
-      } else if (vessel.lastTemperature + 2 > vessel.setpointTemperature) {
+      } else if (
+        vessel.lastTemperature + tempJitter >
+        vessel.setpointTemperature
+      ) {
         this.extinguishBurner(vessel);
         burnerLit = false;
       }
