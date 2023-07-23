@@ -41,8 +41,11 @@ export class VesselService {
   ) {
     this.vesselRepository.find().then((existingVessels) => {
       this.activeVesselSubscriptions = [];
-      existingVessels.forEach((vessel) => {
+      existingVessels.forEach(async (vessel) => {
         this.lightBurner(vessel);
+        await new Promise<void>((res) => {
+          setTimeout(() => res(), 500);
+        });
         this.extinguishBurner(vessel);
         this.vesselRepository.update(
           {
