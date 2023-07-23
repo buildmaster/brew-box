@@ -167,8 +167,9 @@ export class VesselService {
             burner: createVesselInput.burner,
           }),
         );
+        this.subscribeVesselToStatusUpdates(vessel);
       }
-      this.subscribeVesselToStatusUpdates(vessel);
+
       return vessel;
     }
   }
@@ -185,13 +186,30 @@ export class VesselService {
     return this.vesselRepository.delete({ id }).then(() => id);
   }
 
-  updateSetpointTemperature(id: number, setpoint: number): Promise<boolean> {
+  async updateSetpointTemperature(
+    id: number,
+    setpoint: number,
+  ): Promise<boolean> {
+    const vessel = await this.vesselRepository.findOneBy({ id });
+    if (!vessel) {
+      return;
+    }
+    let burnerLit = false;
+    if (vessel.burnerMode === BurnerMode.AUTO) {
+      if (vessel.lastTemperature - 2 < setpoint) {
+        this.lightBurner(vessel);
+        burnerLit = true;
+      } else if (vessel.lastTemperature + 2 > setpoint) {
+        this.extinguishBurner(vessel);
+        burnerLit = false;
+      }
+    }
     return this.vesselRepository
       .update(
         {
           id: id,
         },
-        { setpointTemperature: setpoint },
+        { setpointTemperature: setpoint, burnerLit },
       )
       .then((res) => {
         return res.affected == 1;
