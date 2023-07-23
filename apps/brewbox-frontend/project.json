@@ -101,6 +101,7 @@
     },
     "pm2": {
       "executor": "nx-pm2-plugin:pm2-executor",
+      "dependsOn": ["build"],
       "options": {
         "command": "brewbox-frontend:serve:production",
         "name": "brewbox-frontend",
