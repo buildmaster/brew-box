@@ -5,7 +5,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BurnerMode, Vessel } from './entities/vessel.entity';
 import { TemperatureProbeService } from '../temperature-probe/temperature-probe.service';
-import { BurnerRelay } from '../burner-relay/entities/burner-relay.entity';
 import { PubSub } from 'graphql-subscriptions';
 import { SUBSCRIPTION_KEYS } from '../constants';
 import { TemperatureReading } from '../temperature-reading/entities/temperature-reading.entity';
@@ -35,8 +34,6 @@ export class VesselService {
   constructor(
     @InjectRepository(Vessel)
     private vesselRepository: Repository<Vessel>,
-    @InjectRepository(BurnerRelay)
-    private burnerRepository: Repository<BurnerRelay>,
     @Inject('PUB_SUB') private probePubSub: PubSub,
   ) {
     this.vesselRepository.find().then((existingVessels) => {

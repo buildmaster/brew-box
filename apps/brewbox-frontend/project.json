@@ -105,7 +105,8 @@
       "options": {
         "command": "brewbox-frontend:serve:production",
         "name": "brewbox-frontend",
-        "autorestart": true
+        "autorestart": true,
+        "log_file": "/var/log/buildbox-backend.log"
       }
     },
     "static-storybook": {

@@ -44,7 +44,8 @@
       "options": {
         "command": "brewbox-backend:serve:production",
         "name": "brewbox-backend",
-        "autorestart": true
+        "autorestart": true,
+        "log_file": "/var/log/buildbox-backend.log"
       }
     },
     "lint": {
