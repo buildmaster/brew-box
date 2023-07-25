@@ -1,7 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import ApplicationSidebar from '../application-sidebar/application-sidebar';
 import {
-  CREATE_OR_UPDATE_VESSEL,
   GET_ALL_VESSELS,
   UPDATE_BURNER_MODE,
   UPDATE_SETPOINT,
@@ -11,23 +9,36 @@ import { SUBSCRIBE_TO_TEMPERATURE_UPDATES } from '../queries/temp-probe-queries'
 import Vessel, { BurnerMode } from '../vessel/vessel';
 import { useQuery, useMutation } from '@apollo/client';
 import {
+  Pump as PumpType,
   Vessel as VesselType,
-  VesselsQuery,
 } from '../../__generated__/graphql';
+import {
+  GET_ALL_PUMPS,
+  UPDATE_PUMP_MODE,
+  SUBSCRIBE_TO_PUMP_CHANGE,
+} from '../queries/pump-queries';
+import Pump, { PumpMode } from '../pump/pump';
 
 export function DashboardPage() {
   const {
-    subscribeToMore,
+    subscribeToMore: subscribeToMoreVesselData,
     loading: vesselsLoading,
     error: vesselsError,
     data: vesselsData,
   } = useQuery(GET_ALL_VESSELS);
-  const [updateVessel] = useMutation(CREATE_OR_UPDATE_VESSEL);
+  const {
+    subscribeToMore: subscribeToMorePumpData,
+    loading: pumpsLoading,
+    error: pumpsError,
+    data: pumpsData,
+  } = useQuery(GET_ALL_PUMPS);
   const [updateSetpointTemp] = useMutation(UPDATE_SETPOINT);
   const [updateBurnerMode] = useMutation(UPDATE_BURNER_MODE);
+  const [updatePumpMode] = useMutation(UPDATE_PUMP_MODE);
   if (vesselsLoading) return <div>Loading...</div>;
   if (vesselsError) return <div>{`Error! ${vesselsError.message}`}</div>;
-
+  if (pumpsLoading) return <div>Loading...</div>;
+  if (pumpsError) return <div>{`Error! ${pumpsError.message}`}</div>;
   return (
     <div className="px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 grid grid-cols-10">
@@ -42,7 +53,7 @@ export function DashboardPage() {
                 Temperature={vessel.lastTemperature || 0}
                 SetpointTemperature={vessel.setpointTemperature}
                 subscribeToBurnerUpdates={() => {
-                  subscribeToMore({
+                  subscribeToMoreVesselData({
                     document: SUBSCRIBE_TO_BURNER_CHANGE,
                     variables: {
                       id: vessel.id,
@@ -89,7 +100,7 @@ export function DashboardPage() {
                 }}
                 subscribeToNewTemperatures={() => {
                   if (vessel.probe) {
-                    subscribeToMore({
+                    subscribeToMoreVesselData({
                       document: SUBSCRIBE_TO_TEMPERATURE_UPDATES,
                       variables: {
                         serialNumber: vessel.probe,
@@ -114,6 +125,54 @@ export function DashboardPage() {
                           newData: subscriptionData.data.newTemperatureReading,
                         });
                         return newVessels;
+                      },
+                    });
+                  }
+                }}
+              />
+            </div>
+          );
+        })}
+
+        {pumpsData?.pumps.map((pump, id) => {
+          return (
+            <div key={`pump-container-${id}`} className="col-span-5">
+              <Pump
+                key={`pump-${id}`}
+                Title={pump.name}
+                PumpMode={pump.pumpMode}
+                PumpOn={pump.pumpActive}
+                onPumpModeChang={(pumpMode: PumpMode) => {
+                  updatePumpMode({
+                    variables: {
+                      id: pump.id,
+                      pumpMode,
+                    },
+                  });
+                }}
+                subscribeToPumpUpdates={() => {
+                  if (pump.pinOut) {
+                    subscribeToMorePumpData({
+                      document: SUBSCRIBE_TO_PUMP_CHANGE,
+                      variables: {
+                        id: pump.id,
+                      },
+                      updateQuery: (prev, { subscriptionData }) => {
+                        const newPumpData = subscriptionData.data.pumpChange;
+                        const newPumps = {
+                          pumps: prev.pumps.map((p) => {
+                            if (p.id === newPumpData.id) {
+                              return Object.assign({} as PumpType, p, {
+                                pumpActive: newPumpData.pumpActive,
+                                pumpMode: newPumpData.pumpMode,
+                              } as PumpType);
+                            } else {
+                              return p;
+                            }
+                          }),
+                        };
+
+                        return newPumps;
                       },
                     });
                   }

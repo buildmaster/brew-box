@@ -36,6 +36,7 @@ export class VesselService {
     private vesselRepository: Repository<Vessel>,
     @Inject('PUB_SUB') private probePubSub: PubSub,
   ) {
+    init({ mapping: 'gpio' });
     this.vesselRepository.find().then((existingVessels) => {
       this.activeVesselSubscriptions = [];
       existingVessels.forEach(async (vessel) => {
@@ -56,7 +57,6 @@ export class VesselService {
         this.subscribeVesselToStatusUpdates(vessel);
       });
     });
-    init({ mapping: 'gpio' });
   }
   subscribeVesselToStatusUpdates({
     id,

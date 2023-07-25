@@ -13,7 +13,12 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
-    "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n": types.PumpsDocument,
+    "\n  query pumps {\n    pumps {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.PumpsDocument,
+    "\n  mutation deletePump($id: Int!) {\n    removePump(id: $id)\n  }\n": types.DeletePumpDocument,
+    "\n  mutation createOrUpdatePump(\n    $createOrUpdatePumpInput: CreateOrUpdatePumpInput!\n  ) {\n    createOrUpdatePump(createOrUpdatePumpInput: $createOrUpdatePumpInput) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.CreateOrUpdatePumpDocument,
+    "\n  query getPump($id: Int!) {\n    pump(id: $id) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.GetPumpDocument,
+    "\n  mutation updatePumpMode($id: Int!, $pumpMode: PumpMode!) {\n    updatePumpMode(id: $id, pumpMode: $pumpMode) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.UpdatePumpModeDocument,
+    "\n  subscription subscribeToPumpUpdates($id: Int!) {\n    pumpChange(id: $id) {\n      id\n      pumpActive\n      pumpMode\n    }\n  }\n": types.SubscribeToPumpUpdatesDocument,
     "\n  subscription AllTemperatureUpdates($serialNumber: String!) {\n    newTemperatureReading(serialNumber: $serialNumber) {\n      temperature\n      serialNumber\n    }\n  }\n": types.AllTemperatureUpdatesDocument,
     "\n  query TemperatureProbes {\n    hardwareSerialNumbers\n  }\n": types.TemperatureProbesDocument,
     "\n  query Vessels {\n    vessels {\n      id\n      name\n      lastTemperature\n      probe\n      burner\n      setpointTemperature\n      burnerMode\n      burnerLit\n    }\n  }\n": types.VesselsDocument,
@@ -43,7 +48,27 @@ export function graphql(source: string): unknown;
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function graphql(source: "\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n"): (typeof documents)["\n  query Pumps {\n    pumpRelays {\n      id\n      pinOut\n    }\n  }\n"];
+export function graphql(source: "\n  query pumps {\n    pumps {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"): (typeof documents)["\n  query pumps {\n    pumps {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation deletePump($id: Int!) {\n    removePump(id: $id)\n  }\n"): (typeof documents)["\n  mutation deletePump($id: Int!) {\n    removePump(id: $id)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation createOrUpdatePump(\n    $createOrUpdatePumpInput: CreateOrUpdatePumpInput!\n  ) {\n    createOrUpdatePump(createOrUpdatePumpInput: $createOrUpdatePumpInput) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"): (typeof documents)["\n  mutation createOrUpdatePump(\n    $createOrUpdatePumpInput: CreateOrUpdatePumpInput!\n  ) {\n    createOrUpdatePump(createOrUpdatePumpInput: $createOrUpdatePumpInput) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getPump($id: Int!) {\n    pump(id: $id) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"): (typeof documents)["\n  query getPump($id: Int!) {\n    pump(id: $id) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation updatePumpMode($id: Int!, $pumpMode: PumpMode!) {\n    updatePumpMode(id: $id, pumpMode: $pumpMode) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"): (typeof documents)["\n  mutation updatePumpMode($id: Int!, $pumpMode: PumpMode!) {\n    updatePumpMode(id: $id, pumpMode: $pumpMode) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription subscribeToPumpUpdates($id: Int!) {\n    pumpChange(id: $id) {\n      id\n      pumpActive\n      pumpMode\n    }\n  }\n"): (typeof documents)["\n  subscription subscribeToPumpUpdates($id: Int!) {\n    pumpChange(id: $id) {\n      id\n      pumpActive\n      pumpMode\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

@@ -1,10 +1,12 @@
 import type { Meta } from '@storybook/react';
 import { VesselTable } from './vessel-table';
 import { GET_ALL_VESSELS_WITH_PROBES } from '../queries/vessel-queries';
+import { withRouter } from 'storybook-addon-react-router-v6';
 
 const Story: Meta<typeof VesselTable> = {
   component: VesselTable,
   title: 'VesselTable',
+  decorators: [withRouter],
 };
 export default Story;
 

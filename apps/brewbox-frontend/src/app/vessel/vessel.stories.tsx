@@ -13,5 +13,8 @@ const Story: Meta<typeof Vessel> = {
 };
 export default Story;
 export const Primary = {
-  args: {},
+  args: {
+    subscribeToNewTemperatures: () => {},
+    subscribeToBurnerUpdates: () => {},
+  },
 };

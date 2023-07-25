@@ -7,6 +7,8 @@ import {
 import { DashboardPage } from './dashboard-page/dashboard-page';
 import { VesselTable } from './vessel-table/vessel-table';
 import { AppLayout } from './app-layout';
+import { PumpTable } from './pump-table/pump-table';
+import { GET_ALL_PUMPS } from './queries/pump-queries';
 
 const Story: Meta<typeof AppLayout> = {
   component: AppLayout,
@@ -96,14 +98,51 @@ export const VesselTableThreeVessels = {
                 {
                   id: 1,
                   name: 'HLT',
-                  probe: { serial: 'probe_value_missing' },
-                  burner: { pinOut: 2 },
+                  probe: 'probe_value_missing',
+                  burner: 2,
                 },
                 {
                   id: 2,
                   name: 'MASH',
-                  probe: { serial: 'mock_probe_1' },
-                  burner: { pinOut: 4 },
+                  probe: 'mock_probe_1',
+                  burner: 4,
+                },
+              ],
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+export const PumpTableTwoPumps = {
+  args: {},
+  parameters: {
+    reactRouter: {
+      routePath: '/pumps',
+
+      outlet: <PumpTable />,
+    },
+    apolloClient: {
+      // do not put MockedProvider here.
+      // You can, but its preferred to do it in preview.js
+      mocks: [
+        {
+          request: {
+            query: GET_ALL_PUMPS,
+          },
+          result: {
+            data: {
+              pumps: [
+                {
+                  id: 1,
+                  name: 'Pump 1',
+                  pinOut: 2,
+                },
+                {
+                  id: 2,
+                  name: 'Pump 2',
+                  pinOut: 4,
                 },
               ],
             },
