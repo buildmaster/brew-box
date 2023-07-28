@@ -1,7 +1,7 @@
 import { Fragment, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
-import { CiBeerMugFull } from 'react-icons/ci';
+import { Bars3Icon, XMarkIcon, BeakerIcon } from '@heroicons/react/24/outline';
+import { CiBeerMugFull, CiBeaker1 } from 'react-icons/ci';
 import { GiCookingPot } from 'react-icons/gi';
 import { MdOutlineHeatPump } from 'react-icons/md';
 import { BsCalendar3 } from 'react-icons/bs';
@@ -13,6 +13,12 @@ const navigation = [
   { name: 'Vessels', link: '/vessels', icon: GiCookingPot, current: false },
   { name: 'Pumps', link: '/pumps', icon: MdOutlineHeatPump, current: false },
   { name: 'Brews', link: '/brews', icon: BsCalendar3, current: false },
+  {
+    name: 'Fermentation',
+    link: '/fermentation',
+    icon: BeakerIcon,
+    current: false,
+  },
 ];
 
 /* eslint-disable-next-line */
@@ -109,7 +115,7 @@ export function ApplicationSidebar(_props: ApplicationSidebarProps) {
                                     isActive
                                       ? 'bg-indigo-700 dark:bg-gray-800 text-white'
                                       : 'text-indigo-200 dark:text-gray-400 hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800',
-                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                                    'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                                   )
                                 }
                               >
@@ -120,7 +126,7 @@ export function ApplicationSidebar(_props: ApplicationSidebarProps) {
                                         isActive
                                           ? 'text-white'
                                           : 'text-white dark:text-indigo-200 group-hover:text-white',
-                                        'h-6 w-6 shrink-0'
+                                        'h-6 w-6 shrink-0',
                                       )}
                                       aria-hidden="true"
                                     />
@@ -178,7 +184,7 @@ export function ApplicationSidebar(_props: ApplicationSidebarProps) {
                             isActive
                               ? 'bg-indigo-700 dark:bg-gray-800 text-white'
                               : 'text-white dark:text-gray-400 hover:text-white hover:bg-indigo-700 dark:hover:bg-gray-800',
-                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
+                            'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
                           )
                         }
                       >
@@ -189,7 +195,7 @@ export function ApplicationSidebar(_props: ApplicationSidebarProps) {
                                 isActive
                                   ? 'text-white'
                                   : 'text-white dark:text-indigo-200 group-hover:text-white',
-                                'h-6 w-6 shrink-0'
+                                'h-6 w-6 shrink-0',
                               )}
                               aria-hidden="true"
                             />

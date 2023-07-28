@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { FermentationService } from './fermentation.service';
 import { FermentationResolver } from './fermentation.resolver';
+import { PubSubModule } from '../pub-sub/pub-sub.module';
 
 @Module({
-  providers: [FermentationResolver, FermentationService]
+  imports: [PubSubModule],
+  providers: [FermentationResolver, FermentationService],
 })
-export class FermentationModule {
-  
-}
+export class FermentationModule {}

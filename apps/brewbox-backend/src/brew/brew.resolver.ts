@@ -13,7 +13,7 @@ export class BrewResolver {
     return this.brewService.create(createBrewInput);
   }
 
-  @Query(() => [Brew], { name: 'brew' })
+  @Query(() => [Brew], { name: 'brews' })
   findAll() {
     return this.brewService.findAll();
   }

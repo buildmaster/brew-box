@@ -13,13 +13,15 @@ import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin
 import { FermentationModule } from '../fermentation/fermentation.module';
 import { PumpModule } from '../pump/pump.module';
 import { Pump } from '../pump/entities/pump.entity';
+import { BrewModule } from '../brew/brew.module';
+import { Brew } from '../brew/entities/brew.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
       database: '.database/db',
-      entities: [Vessel, TemperatureReading, Pump],
+      entities: [Vessel, TemperatureReading, Pump, Brew],
       synchronize: true,
       logging: false,
     }),
@@ -28,6 +30,7 @@ import { Pump } from '../pump/entities/pump.entity';
     VesselModule,
     FermentationModule,
     PumpModule,
+    BrewModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       subscriptions: {

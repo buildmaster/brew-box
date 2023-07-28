@@ -5,6 +5,7 @@ import { VesselTable } from '../vessel-table/vessel-table';
 import { PumpTable } from '../pump-table/pump-table';
 import { NewVesselForm, EditVesselForm } from '../vessel-form/vessel-form';
 import { NewPumpForm, EditPumpForm } from '../pump-form/pump-form';
+import FermentationDashboard from '../fermentation-dashboard/fermentation-dashboard';
 export const AppRoutes: RouteObject[] = [
   {
     path: '/',
@@ -41,6 +42,10 @@ export const AppRoutes: RouteObject[] = [
       {
         path: 'pumps/:id',
         element: <EditPumpForm />,
+      },
+      {
+        path: 'fermentation',
+        element: <FermentationDashboard />,
       },
     ],
   },

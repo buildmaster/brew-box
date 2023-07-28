@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { PubSub } from 'graphql-subscriptions';
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { SUBSCRIPTION_KEYS } from '../constants';
-import { init, HIGH, LOW, open, OUTPUT, write } from 'rpio';
+import { HIGH, LOW, open, OUTPUT, write } from 'rpio';
 
 @ObjectType()
 export class PumpChange {

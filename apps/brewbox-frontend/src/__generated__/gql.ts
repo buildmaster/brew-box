@@ -13,6 +13,8 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Therefore it is highly recommended to use the babel or swc plugin for production.
  */
 const documents = {
+    "\n  query getFermentation {\n    fermentation {\n      tempC\n      tempF\n      gravity\n    }\n  }\n": types.GetFermentationDocument,
+    "\n  subscription subscribeToFermentationUpdates {\n    fermentationReading {\n      tempC\n      tempF\n      gravity\n    }\n  }\n": types.SubscribeToFermentationUpdatesDocument,
     "\n  query pumps {\n    pumps {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.PumpsDocument,
     "\n  mutation deletePump($id: Int!) {\n    removePump(id: $id)\n  }\n": types.DeletePumpDocument,
     "\n  mutation createOrUpdatePump(\n    $createOrUpdatePumpInput: CreateOrUpdatePumpInput!\n  ) {\n    createOrUpdatePump(createOrUpdatePumpInput: $createOrUpdatePumpInput) {\n      id\n      name\n      pinOut\n      pumpMode\n      pumpActive\n    }\n  }\n": types.CreateOrUpdatePumpDocument,
@@ -45,6 +47,14 @@ const documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  query getFermentation {\n    fermentation {\n      tempC\n      tempF\n      gravity\n    }\n  }\n"): (typeof documents)["\n  query getFermentation {\n    fermentation {\n      tempC\n      tempF\n      gravity\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  subscription subscribeToFermentationUpdates {\n    fermentationReading {\n      tempC\n      tempF\n      gravity\n    }\n  }\n"): (typeof documents)["\n  subscription subscribeToFermentationUpdates {\n    fermentationReading {\n      tempC\n      tempF\n      gravity\n    }\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

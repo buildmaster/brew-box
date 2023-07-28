@@ -1,35 +1,30 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { FermentationService } from './fermentation.service';
-import { Fermentation } from './entities/fermentation.entity';
-import { CreateFermentationInput } from './dto/create-fermentation.input';
-import { UpdateFermentationInput } from './dto/update-fermentation.input';
+import { Resolver, Query, Subscription } from '@nestjs/graphql';
+import {
+  FermentationReading,
+  FermentationService,
+} from './fermentation.service';
+import { PubSub } from 'graphql-subscriptions';
+import { Inject } from '@nestjs/common';
+import { SUBSCRIPTION_KEYS } from '../constants';
 
-@Resolver(() => Fermentation)
+@Resolver(() => FermentationReading)
 export class FermentationResolver {
-  constructor(private readonly fermentationService: FermentationService) {}
+  constructor(
+    private readonly fermentationService: FermentationService,
+    @Inject('PUB_SUB') private subscriptionPubSub: PubSub,
+  ) {}
 
-  @Mutation(() => Fermentation)
-  createFermentation(@Args('createFermentationInput') createFermentationInput: CreateFermentationInput) {
-    return this.fermentationService.create(createFermentationInput);
+  @Query(() => FermentationReading, { name: 'fermentation' })
+  getCurrentReading() {
+    return this.fermentationService.getCurrentReading();
   }
 
-  @Query(() => [Fermentation], { name: 'fermentation' })
-  findAll() {
-    return this.fermentationService.findAll();
-  }
-
-  @Query(() => Fermentation, { name: 'fermentation' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.fermentationService.findOne(id);
-  }
-
-  @Mutation(() => Fermentation)
-  updateFermentation(@Args('updateFermentationInput') updateFermentationInput: UpdateFermentationInput) {
-    return this.fermentationService.update(updateFermentationInput.id, updateFermentationInput);
-  }
-
-  @Mutation(() => Fermentation)
-  removeFermentation(@Args('id', { type: () => Int }) id: number) {
-    return this.fermentationService.remove(id);
+  @Subscription(() => FermentationReading, {
+    name: 'fermentationReading',
+  })
+  subscibeToNewFermentationReadings() {
+    return this.subscriptionPubSub.asyncIterator(
+      `${SUBSCRIPTION_KEYS.NEW_FERMENT_READING}`,
+    );
   }
 }

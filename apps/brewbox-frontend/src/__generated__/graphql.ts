@@ -18,6 +18,20 @@ export type Scalars = {
   DateTime: { input: any; output: any; }
 };
 
+export type Brew = {
+  __typename?: 'Brew';
+  /** Batch ID in BrewFather */
+  batchId: Scalars['String']['output'];
+  /** planned brew date */
+  date: Scalars['DateTime']['output'];
+  /** Brew Id */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Batch name */
+  name: Scalars['String']['output'];
+  /** Batch status in Brewfather */
+  status: Scalars['String']['output'];
+};
+
 export type BurnerChange = {
   __typename?: 'BurnerChange';
   /** If the vessel is lit */
@@ -34,7 +48,7 @@ export enum BurnerMode {
   On = 'ON'
 }
 
-export type CreateFermentationInput = {
+export type CreateBrewInput = {
   /** Example field (placeholder) */
   exampleField: Scalars['Int']['input'];
 };
@@ -64,32 +78,36 @@ export type CreateTemperatureReadingInput = {
   exampleField: Scalars['Int']['input'];
 };
 
-export type Fermentation = {
-  __typename?: 'Fermentation';
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int']['output'];
+export type FermentationReading = {
+  __typename?: 'FermentationReading';
+  /** The specific gravity */
+  gravity: Scalars['Float']['output'];
+  /** The temperature in degrees C */
+  tempC: Scalars['Float']['output'];
+  /** The temperature in degrees F */
+  tempF: Scalars['Float']['output'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createFermentation: Fermentation;
+  createBrew: Brew;
   createOrUpdatePump: Pump;
   createOrUpdateVessel: Vessel;
   createTemperatureReading: TemperatureReading;
-  removeFermentation: Fermentation;
+  removeBrew: Brew;
   removePump: Scalars['Int']['output'];
   removeTemperatureReading: TemperatureReading;
   removeVessel: Scalars['Int']['output'];
+  updateBrew: Brew;
   updateBurnerMode: Scalars['Boolean']['output'];
-  updateFermentation: Fermentation;
   updatePumpMode?: Maybe<Pump>;
   updateSetpointTemperature: Scalars['Boolean']['output'];
   updateTemperatureReading: TemperatureReading;
 };
 
 
-export type MutationCreateFermentationArgs = {
-  createFermentationInput: CreateFermentationInput;
+export type MutationCreateBrewArgs = {
+  createBrewInput: CreateBrewInput;
 };
 
 
@@ -108,7 +126,7 @@ export type MutationCreateTemperatureReadingArgs = {
 };
 
 
-export type MutationRemoveFermentationArgs = {
+export type MutationRemoveBrewArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -128,14 +146,14 @@ export type MutationRemoveVesselArgs = {
 };
 
 
-export type MutationUpdateBurnerModeArgs = {
-  burnerMode: BurnerMode;
-  id: Scalars['Int']['input'];
+export type MutationUpdateBrewArgs = {
+  updateBrewInput: UpdateBrewInput;
 };
 
 
-export type MutationUpdateFermentationArgs = {
-  updateFermentationInput: UpdateFermentationInput;
+export type MutationUpdateBurnerModeArgs = {
+  burnerMode: BurnerMode;
+  id: Scalars['Int']['input'];
 };
 
 
@@ -186,7 +204,9 @@ export enum PumpMode {
 
 export type Query = {
   __typename?: 'Query';
-  fermentation: Fermentation;
+  brew: Brew;
+  brews: Array<Brew>;
+  fermentation: FermentationReading;
   hardwareSerialNumbers: Array<Scalars['String']['output']>;
   pump: Pump;
   pumps: Array<Pump>;
@@ -197,7 +217,7 @@ export type Query = {
 };
 
 
-export type QueryFermentationArgs = {
+export type QueryBrewArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -219,6 +239,7 @@ export type QueryVesselArgs = {
 export type Subscription = {
   __typename?: 'Subscription';
   burnerChange: BurnerChange;
+  fermentationReading: FermentationReading;
   newTemperatureReading: TemperatureReading;
   pumpChange: PumpChange;
 };
@@ -250,7 +271,7 @@ export type TemperatureReading = {
   temperature: Scalars['Float']['output'];
 };
 
-export type UpdateFermentationInput = {
+export type UpdateBrewInput = {
   /** Example field (placeholder) */
   exampleField?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['Int']['input'];
@@ -281,6 +302,16 @@ export type Vessel = {
   /** Temperature that the vessel is set to turn on below and off above */
   setpointTemperature: Scalars['Float']['output'];
 };
+
+export type GetFermentationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetFermentationQuery = { __typename?: 'Query', fermentation: { __typename?: 'FermentationReading', tempC: number, tempF: number, gravity: number } };
+
+export type SubscribeToFermentationUpdatesSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type SubscribeToFermentationUpdatesSubscription = { __typename?: 'Subscription', fermentationReading: { __typename?: 'FermentationReading', tempC: number, tempF: number, gravity: number } };
 
 export type PumpsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -390,6 +421,8 @@ export type SubscribeToBurnerChangeSubscriptionVariables = Exact<{
 export type SubscribeToBurnerChangeSubscription = { __typename?: 'Subscription', burnerChange: { __typename?: 'BurnerChange', burnerLit: boolean, burnerMode: BurnerMode, id: number } };
 
 
+export const GetFermentationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"getFermentation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fermentation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tempC"}},{"kind":"Field","name":{"kind":"Name","value":"tempF"}},{"kind":"Field","name":{"kind":"Name","value":"gravity"}}]}}]}}]} as unknown as DocumentNode<GetFermentationQuery, GetFermentationQueryVariables>;
+export const SubscribeToFermentationUpdatesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"subscription","name":{"kind":"Name","value":"subscribeToFermentationUpdates"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"fermentationReading"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"tempC"}},{"kind":"Field","name":{"kind":"Name","value":"tempF"}},{"kind":"Field","name":{"kind":"Name","value":"gravity"}}]}}]}}]} as unknown as DocumentNode<SubscribeToFermentationUpdatesSubscription, SubscribeToFermentationUpdatesSubscriptionVariables>;
 export const PumpsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"pumps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"pumps"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"pinOut"}},{"kind":"Field","name":{"kind":"Name","value":"pumpMode"}},{"kind":"Field","name":{"kind":"Name","value":"pumpActive"}}]}}]}}]} as unknown as DocumentNode<PumpsQuery, PumpsQueryVariables>;
 export const DeletePumpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"deletePump"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"removePump"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}]}}]} as unknown as DocumentNode<DeletePumpMutation, DeletePumpMutationVariables>;
 export const CreateOrUpdatePumpDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"createOrUpdatePump"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"createOrUpdatePumpInput"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CreateOrUpdatePumpInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createOrUpdatePump"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"createOrUpdatePumpInput"},"value":{"kind":"Variable","name":{"kind":"Name","value":"createOrUpdatePumpInput"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"pinOut"}},{"kind":"Field","name":{"kind":"Name","value":"pumpMode"}},{"kind":"Field","name":{"kind":"Name","value":"pumpActive"}}]}}]}}]} as unknown as DocumentNode<CreateOrUpdatePumpMutation, CreateOrUpdatePumpMutationVariables>;
