@@ -68,13 +68,17 @@ export class FermentationService {
         },
         Math.floor(Math.random() * 10000) + 10000,
       );
+    } else {
+      this.scanner = new BeaconScanner();
+      this.scanner.onadvertisement = (ad) => {
+        this.processBeconAdvert(ad);
+      };
     }
-    this.scanner = new BeaconScanner();
-    this.scanner.onadvertisement = this.processBeconAdvert;
     this.logReading();
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   processBeconAdvert(ad: any) {
+    console.log('GOT BEACON ADVERT');
     if (ad.iBeacon.uuid === 'A495BB20-C5B1-4B44-B512-1370F02D74DE') {
       const gravity = ad.iBeacon.minor / 1000;
       const tempF = ad.iBeacon.major / 10;
