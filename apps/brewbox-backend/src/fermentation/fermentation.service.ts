@@ -62,7 +62,7 @@ export class FermentationService {
             iBeacon: {
               uuid: 'A495BB20-C5B1-4B44-B512-1370F02D74DE',
               major: ((Math.random() * 20 * 9) / 5 + 32) * 10,
-              minor: (Math.random() / 100 + 1) * 1000,
+              minor: (Math.random() / 100 + 1) * 10000,
             },
           });
         },
@@ -81,7 +81,7 @@ export class FermentationService {
   processBeconAdvert(ad: any) {
     console.log({ ad }, 'GOT BEACON ADVERT');
     if (ad.iBeacon.uuid === 'A495BB20-C5B1-4B44-B512-1370F02D74DE') {
-      const gravity = ad.iBeacon.minor / 1000;
+      const gravity = ad.iBeacon.minor / 10000;
       const tempF = ad.iBeacon.major / 10;
       const tempC = ((tempF - 32) * 5) / 9;
       this.logFermentation({
