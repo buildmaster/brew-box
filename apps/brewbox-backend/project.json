@@ -27,7 +27,8 @@
       "executor": "@nrwl/js:node",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "brewbox-backend:build"
+        "buildTarget": "brewbox-backend:build",
+        "watch": false
       },
       "configurations": {
         "development": {
