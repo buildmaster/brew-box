@@ -107,16 +107,21 @@ export class FermentationService {
           gravity: localLogReading.gravity,
           gravity_unit: GravityUnit.SpecificGravity,
         } as BrewFatherStreamReading;
-        delete this.newReading;
+
         return fetch('http://log.brewfather.net/stream?id=KxrJcjbv7exQcZ', {
           method: 'POST',
           body: JSON.stringify(brewFatherStreamReading),
           headers: { 'Content-Type': 'application/json' },
-        }).then(() => {
-          this.timeout = setTimeout(() => {
-            this.logReading();
-          }, 900000);
-        });
+        })
+          .then(() => {
+            delete this.newReading;
+            this.timeout = setTimeout(() => {
+              this.logReading();
+            }, 900000);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
       } else {
         this.timeout = setTimeout(() => {
           this.logReading();
