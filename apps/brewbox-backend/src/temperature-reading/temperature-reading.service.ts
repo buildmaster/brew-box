@@ -60,13 +60,34 @@ export class TemperatureReadingService {
   handleNewTemperatureReading(payload: TemperatureReadingEvent) {
     console.log({ event: payload }, 'new temp event');
   }
+
+  private readSensorWithRetry(sn: string, maxAttempts = 3): number | null {
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const temp = sensor.readC(sn, 4);
+        if (temp !== null && temp !== undefined && !isNaN(temp)) {
+          return temp;
+        }
+        console.warn(`Sensor ${sn} returned invalid value on attempt ${attempt}: ${temp}`);
+      } catch (err) {
+        console.error(`Sensor ${sn} read error on attempt ${attempt}:`, err);
+      }
+    }
+    return null;
+  }
+
   getAllTemperatureReadings() {
     const hardwareSerialNumbers =
       TemperatureProbeService.getAllHardwareSerialNumbers();
     hardwareSerialNumbers.forEach((sn) => {
       let temp: number;
       if (this.isRunningOnPi) {
-        temp = sensor.readC(sn, 4);
+        const result = this.readSensorWithRetry(sn);
+        if (result === null) {
+          console.error(`Sensor ${sn} failed all read attempts, skipping.`);
+          return;
+        }
+        temp = result;
       } else {
         this.mockTemperatureReadings = this.mockTemperatureReadings || {};
         const randomFactor = Math.random() * 2.9;
@@ -82,9 +103,6 @@ export class TemperatureReadingService {
         console.log({ sn, temp });
         this.mockTemperatureReadings[sn] = temp;
       }
-      if (!temp) {
-        temp = -1;
-      }
       const reading = this.entityRepository.create({
         temperature: temp,
         serialNumber: sn,
@@ -96,6 +114,8 @@ export class TemperatureReadingService {
             newTemperatureReading: reading,
           },
         );
+      }).catch((err) => {
+        console.error(`Failed to persist temperature reading for ${sn}:`, err);
       });
     });
   }
